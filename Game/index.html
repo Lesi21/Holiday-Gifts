@@ -1,15 +1,143 @@
-﻿<!DOCTYPE html>
-<html lang="ru" >
-    <head>        
-	<meta charset="utf-8" />
-        <title>Новогодняя игра</title>
-        <link href="css/style.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="js/jquery.js"></script>
-        <script type="text/javascript" src="js/script.js"></script>
-    </head>
-    <body>
-        <div class="container">
-            <canvas id="scene" width="800" height="600"></canvas>
-        </div>
+﻿<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>Holiday Gifts</title>
+	<script type="text/javascript" src="js/phaser.js"></script>
+	<style type="text/css" src="css/style.css">
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+	var bg;
+	var stars;
+	var trees;
+	var houses;
+	var rains;
+	var cursors;
+	var platforms;
+	var bg;
+	var player;
+	var layer;
+	var score=0;
+	var x;
+	var y;
+	var map;	
+	var flag=true;
+
+
+	var game = new Phaser.Game(700, 500, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
+
+	function preload() {/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	game.load.image('spaceship', 'images/spaceship.png');
+	game.load.image('house', 'images/house.jpg');
+	game.load.image('tree', 'images/tree.jpg');
+	game.load.image('rain', 'images/rain.jpg');
+	game.load.image('background', 'images/background.png');
+	game.load.image('ground', 'images/ground.png');
+	game.load.image('snow', 'images/snow.jpg');
+    game.load.image('star', 'images/star.png');
+}
+	function create() {////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.add.sprite(0, 0, 'background');
+    platforms = game.add.group();
+  
+    platforms.enableBody = true;
+    var ground = platforms.create(0, game.world.height - 30, 'snow');
+    ground.scale.setTo(2, 2);
+    ground.body.immovable = true;
+//тучи
+    rains = game.add.group();
+    rains.enableBody = true;
+    var rainss = rains.create(100, 50, 'rain');
+    rainss.body.immovable = true;
+	rainss = rains.create(400, 50, 'rain');
+    rainss.body.immovable = true;
+    
+//елки    
+    var trees = platforms.create(300, 400, 'tree');
+    trees.body.immovable = true;
+    trees = platforms.create(600, 400, 'tree');
+    trees.body.immovable = true;
+	
+    
+    //домики
+	houses = platforms.create(180, 400, 'house');
+    houses.body.immovable = true;
+	houses = platforms.create(450, 400, 'house');
+    houses.body.immovable = true;
+	//персонаж
+    player = game.add.sprite(32, game.world.height - 150, 'spaceship');
+    game.physics.arcade.enable(player);
+
+    player.body.bounce.y = 0;
+    //player.body.gravity.y = 300;
+    player.body.collideWorldBounds = true;
+    game.camera.follow(player);
+    //player.animations.add('right', 10, true);
+	//player.animations.add('up',  10, true);
+    //player.animations.add('down', 10, true);
+//конец персонажа
+    stars = game.add.group();
+    stars.enableBody = true;
+
+
+    for (var i = 0; i < 10; i++)//генерация звездочек
+    {
+	x=Math.random() * (700 - 80) + 80;
+	y=Math.random() * (300 - 80) + 80;
+        var star = stars.create(x, y, 'star');
+        star.body.bounce.y = 0.7 + Math.random() * 0.2;
+    }
+    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    cursors = game.input.keyboard.createCursorKeys();  
+    
+}
+
+function update() {
+
+    game.physics.arcade.collide(player, platforms);
+    game.physics.arcade.collide(stars, platforms);
+    game.physics.arcade.collide(player, rains);
+    game.physics.arcade.overlap(player, stars, collectStar, null, this);
+    game.physics.arcade.overlap(player, rains, collectRain, null, this);
+    
+		 player.body.velocity.x= 50;   
+    if (cursors.right.isDown)
+    {
+        player.body.velocity.x = 50;
+        player.body.velocity.y = 0;
+    }
+    if (cursors.up.isDown)
+    {
+            player.body.velocity.y = -50;
+            player.body.velocity.x = 0;
+    }         
+	if (cursors.down.isDown)
+    {
+        player.body.velocity.y = 50;
+        player.body.velocity.x = 0;
+    }
+      		
+}
+function collectRain(player,rainss)
+{
+    scoreText.text = 'Game Over';
+}
+function collectStar (player, star) {
+    star.kill();
+    score += 10;
+    scoreText.text = 'Score: ' + score;
+}
+function render() {
+    game.debug.cameraInfo(game.camera, 32, 500);
+}
+
+	</script>
     </body>
 </html>
