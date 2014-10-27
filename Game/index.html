@@ -1,41 +1,32 @@
-﻿<!doctype html> 
+<!doctype html> 
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8" />
     <title>Holiday Gifts</title>
 	<script type="text/javascript" src="js/phaser.js"></script>
-	<style type="text/css" src="css/style.css">
-	<style type="text/css">
-        body {
-            margin: 0;
-        }
-    </style>
+	<script type="text/javascript" src="js/script.js"></script>
+	<link rel="stylesheet" type=”text/css” href="/css/style.css"/>
 </head>
 <body>
     <script>
-	var stars,trees,houses,rains,cursors;
+	var stars,trees,houses,rains,cursor,land;
 	var platforms,player,layer, x,y;
 	var score=0;//счет игры
 
 	var game = new Phaser.Game(700, 500, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
-
-	function preload() {/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	game.load.image('spaceship', 'images/spaceship.png');
-	game.load.image('house', 'images/house.jpg');
-	game.load.image('tree', 'images/tree.jpg');
-	game.load.image('rain', 'images/rain.jpg');
-	game.load.image('background', 'images/background.png');
-	game.load.image('snow', 'images/snow.jpg');
-    game.load.image('star', 'images/star.png');
-}
-	function create() {////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.add.sprite(0, 0, 'background');
+    game.world.setBounds(0, 0, 700, 500);
+    //game.add.sprite(0, 0, 'background');
+    land=game.add.tileSprite(0, 0,700,500, 'background');
+    land.fixedToCamera = true;
     platforms = game.add.group();//чтобы работать с группами нужно писать такую строку
     platforms.enableBody = true;
     var ground = platforms.create(0, game.world.height - 30, 'snow');
     ground.scale.setTo(2, 2);
     ground.body.immovable = true;
+       
 //тучи
     rains = game.add.group();
     rains.enableBody = true;
@@ -49,7 +40,7 @@
     var firtree = trees.create(300, 400, 'tree');//firttree - это по английски новогодняя елка, неучи
     firtree.body.immovable = true;
     firtree = trees.create(600, 400, 'tree');
-    firtree.body.immovable = true;	    
+    firtree.body.immovable = true;
 //домики
 	houses = game.add.group();
 	houses.enableBody = true;
@@ -58,12 +49,11 @@
 	camp = houses.create(450, 400, 'house');
     camp.body.immovable = true;
 //персонаж
-    player = game.add.sprite(32, game.world.height - 150, 'spaceship');
-    game.physics.arcade.enable(player);
-    player.body.bounce.y = 0;
+    player = game.add.sprite(game.world.centerX, game.world.centerY, 'spaceship');
+    game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
     player.body.collideWorldBounds = true;//чтобы чувак за пределы экрана не вылазил
-    //game.camera.follow(player);//пока эта шляпа не работает
-//конец персонажа
+    game.camera.follow(player);//пока эта шляпа не работает
+//подарки
     stars = game.add.group();
     stars.enableBody = true;
 
@@ -71,21 +61,22 @@
     {
 	x=Math.random() * (700 - 80) + 80;
 	y=Math.random() * (300 - 80) + 80;
-        var star = stars.create(x, y, 'star');
+    var star = stars.create(x, y, 'star');
     }
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    cursors = game.input.keyboard.createCursorKeys();     
+    scoreText = game.add.text(16, 16, 'Presents', { fontSize: '32px', fill: '#000' });
+    cursors = game.input.keyboard.createCursorKeys();//подключаем клавиши для работы     
 }
 
 function update() {
-    game.physics.arcade.collide(player, platforms);//так мы добавляем обработчики столкновений
-    game.physics.arcade.collide(player, rains);
+	land.tilePosition.x -= 1;//создаем движение фона
+    game.physics.arcade.collide(player, platforms);
+    game.physics.arcade.collide(player, rains);//так мы добавляем обработчики столкновений
 	game.physics.arcade.collide(player, houses);
 	game.physics.arcade.collide(player, trees);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, rains, collectRain, null, this);
     
-	player.body.velocity.x= 50;//начальная скорость героя   
+	player.body.velocity.x= 0;//начальная скорость героя   
     if (cursors.right.isDown)
     {
         player.body.velocity.x = 50;
@@ -93,12 +84,12 @@ function update() {
     }
     if (cursors.up.isDown)
     {
-            player.body.velocity.y = -50;
+            player.body.velocity.y = -60;
             player.body.velocity.x = 0;
     }         
 	if (cursors.down.isDown)
     {
-        player.body.velocity.y = 50;
+        player.body.velocity.y = 60;
         player.body.velocity.x = 0;
     }     		
 }
@@ -108,12 +99,10 @@ function collectRain(player, cloud)
 }
 function collectStar (player, star) {
     star.kill();
-    score += 10;
-    scoreText.text = 'Score: ' + score;
+    score += 1;
+    scoreText.text = 'Presents: ' + score;
 }
-function render() {
-}
-
+function render() {}
 	</script>
     </body>
 </html>
