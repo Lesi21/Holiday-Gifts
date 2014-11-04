@@ -2,107 +2,29 @@
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8" />
-    <title>Holiday Gifts</title>
+    <title>Holiday gifts</title>
 	<script type="text/javascript" src="js/phaser.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
-	<link rel="stylesheet" type=”text/css” href="/css/style.css"/>
+	<script type="text/javascript" src="js/states/boot.js"></script>
+	<script type="text/javascript" src="js/states/preload.js"></script>
+	<script type="text/javascript" src="js/states/menu.js"></script>
+	<script type="text/javascript" src="js/states/levelMap.js"></script>
+	<script type="text/javascript" src="js/states/play.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/mystyle.css"/>
 </head>
 <body>
-    <script>
-	var stars,trees,houses,rains,cursor,land;
-	var platforms,player,layer, x,y;
-	var score=0;//счет игры
+<div id="mainDiv"></div>
+<script type="text/javascript">
+	var WINDOW_WIDTH = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('mainDiv')[0].clientWidth;
+    var WINDOW_HEIGHT = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('mainDiv')[0].clientHeight;
+	var game = new Phaser.Game(WINDOW_WIDTH*0.97, WINDOW_HEIGHT*0.97, Phaser.CANVAS, 'mainDiv');
 
-	var game = new Phaser.Game(700, 500, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
-	
-	function create() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.world.setBounds(0, 0, 700, 500);
-    //game.add.sprite(0, 0, 'background');
-    land=game.add.tileSprite(0, 0,700,500, 'background');
-    land.fixedToCamera = true;
-    platforms = game.add.group();//чтобы работать с группами нужно писать такую строку
-    platforms.enableBody = true;
-    var ground = platforms.create(0, game.world.height - 30, 'snow');
-    ground.scale.setTo(2, 2);
-    ground.body.immovable = true;
-       
-//тучи
-    rains = game.add.group();
-    rains.enableBody = true;
-    var cloud = rains.create(100, 50, 'rain');
-    cloud.body.immovable = true;//вобщем эта функция нужна чтобы с обьектами можно было сталкиваться
-	cloud = rains.create(400, 50, 'rain');
-    cloud.body.immovable = true;//такие строки нужно писать после каждого добавления обьекта   
-//елки    
-	trees = game.add.group();
-	trees.enableBody = true;
-    var firtree = trees.create(300, 400, 'tree');//firttree - это по английски новогодняя елка, неучи
-    firtree.body.immovable = true;
-    firtree = trees.create(600, 400, 'tree');
-    firtree.body.immovable = true;
-//домики
-	houses = game.add.group();
-	houses.enableBody = true;
-	camp = houses.create(180, 400, 'house');
-    camp.body.immovable = true;
-	camp = houses.create(450, 400, 'house');
-    camp.body.immovable = true;
-//персонаж
-    player = game.add.sprite(game.world.centerX, game.world.centerY, 'spaceship');
-    game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
-    player.body.collideWorldBounds = true;//чтобы чувак за пределы экрана не вылазил
-    game.camera.follow(player);//пока эта шляпа не работает
-//подарки
-    stars = game.add.group();
-    stars.enableBody = true;
+	game.state.add('boot', Boot);
+	game.state.add('menu', Menu);
+	game.state.add('play', Play);
+	game.state.add('preload', Preload);
+	game.state.add('levelMap', LevelMap);
 
-    for (var i = 0; i < 5; i++)//генерация подарков
-    {
-	x=Math.random() * (700 - 80) + 80;
-	y=Math.random() * (300 - 80) + 80;
-    var star = stars.create(x, y, 'star');
-    }
-    scoreText = game.add.text(16, 16, 'Presents', { fontSize: '32px', fill: '#000' });
-    cursors = game.input.keyboard.createCursorKeys();//подключаем клавиши для работы     
-}
-
-function update() {
-	land.tilePosition.x -= 1;//создаем движение фона
-    game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(player, rains);//так мы добавляем обработчики столкновений
-	game.physics.arcade.collide(player, houses);
-	game.physics.arcade.collide(player, trees);
-    game.physics.arcade.overlap(player, stars, collectStar, null, this);
-    game.physics.arcade.overlap(player, rains, collectRain, null, this);
-    
-	player.body.velocity.x= 0;//начальная скорость героя   
-    if (cursors.right.isDown)
-    {
-        player.body.velocity.x = 50;
-        player.body.velocity.y = 0;
-    }
-    if (cursors.up.isDown)
-    {
-            player.body.velocity.y = -60;
-            player.body.velocity.x = 0;
-    }         
-	if (cursors.down.isDown)
-    {
-        player.body.velocity.y = 60;
-        player.body.velocity.x = 0;
-    }     		
-}
-function collectRain(player, cloud)
-{
-    scoreText.text = 'Game Over';
-}
-function collectStar (player, star) {
-    star.kill();
-    score += 1;
-    scoreText.text = 'Presents: ' + score;
-}
-function render() {}
-	</script>
-    </body>
+	game.state.start('boot');//запуск Boot (смотри js/states/boot.js) 
+</script>
+</body>
 </html>
