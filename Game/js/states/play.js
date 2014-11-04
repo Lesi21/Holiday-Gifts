@@ -1,7 +1,12 @@
 //Здесь добавляем игровые элементы
-
-var score=0;//счет игры
-var speed=215;
+//Нужно создать отдельный файл где будем хранить готовые функции
+//Подарки и остальные элементы должны появляться за экраном(справо)
+ //На репозитории нужно создать две ветки master and developer(сокращенно dev)
+ 
+var score = 0;//счет игры
+var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
+var dudeSpeed = 215;//величина(скорость) подьема персонажа
+var backgroundSpeed = 50;//скорость прокрутки фона
 
 function Play() {
 }
@@ -11,19 +16,19 @@ Play.prototype = {
     	
 	//Задаем фон
 	var cityField = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
-	cityField.autoScroll(-50,0);
+	cityField.autoScroll(-backgroundSpeed, 0);
 	this.game.physics.arcade.enableBody(cityField);
 	cityField.body.allowGravity = false;
 	cityField.body.immovable = true;
 		
 	//Земля (пол)
 	this.ground = game.add.tileSprite(0, game.world.height-30, game.world.width, 50, 'ground');//добавляем пол(землю)
-	this.ground.autoScroll(-250,0);
+	this.ground.autoScroll(-gameSpeed, 0);
 	this.game.physics.arcade.enableBody(this.ground);
 	this.ground.body.immovable = true;
 	
     //Создаем персонажа
-	dude = this.game.add.sprite(game.world.centerX-100, game.world.centerY, 'dude');
+	dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
 	game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
 	dude.body.gravity.y = 250;	//задаем величину гравитации
 	dude.body.collideWorldBounds = true;
@@ -53,7 +58,7 @@ Play.prototype = {
 	this.game.physics.arcade.overlap(dude, presents, collectPresent, null, this);//проверка взял подарок
 	if (cursors.up.isDown)
     {
-    	dude.body.velocity.y = -speed;
+    	dude.body.velocity.y = -dudeSpeed;
             dude.body.velocity.x = 0;
     }         
 	if (cursors.down.isDown)
@@ -96,13 +101,14 @@ Play.prototype = {
 function collectPresent (dude, present) {
 	present.kill();
     score += 1;
-	speed=speed-7;
+	if(dudeSpeed > 130)
+		dudeSpeed = dudeSpeed - 3;
     scoreText.text = 'Presents: ' + score;
 }
 function addOnePresent(x, y) {	
         var present = this.presents.getFirstDead();
         present.reset(x, y);
-        present.body.velocity.x = -130; //скорость приближения подарков 
+        present.body.velocity.x = -gameSpeed; //скорость приближения подарков 
         present.checkWorldBounds = true;
         present.outOfBoundsKill = true;
   }
