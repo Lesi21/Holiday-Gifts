@@ -2,7 +2,7 @@
 //Нужно создать отдельный файл где будем хранить готовые функции
 //Подарки и остальные элементы должны появляться за экраном(справо)
  //На репозитории нужно создать две ветки master and developer(сокращенно dev)
-var lifes = 2;//кол-во жизней персонажа 
+var lives = 2;//кол-во жизней персонажа 
 var score = 0;//счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
@@ -55,7 +55,7 @@ Play.prototype = {
 	
 	//поле состояния персонажа, счета игры
 	scoreText = game.add.text(16, 16, 'Presents: ' + score, { fontSize: '26px', fill: '#000' });
-	lifesText = game.add.text(200, 16, 'Lifes: ' + lifes, { fontSize: '26px', fill: '#000' });
+	lifesText = game.add.text(200, 16, 'Lives: ' + lives, { fontSize: '26px', fill: '#000' });
 	
 	//кнопка паузы
 	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
@@ -197,8 +197,8 @@ Play.prototype = {
   //встреча со снежком
   function collideSnowball(dude, snowball) {
 	snowball.kill();
-	if(lifes > 1)
-		lifes -= 1;
+	if(lives > 1)
+		lives -= 1;
 	else 
 		{
 			dude.destroy();
@@ -206,14 +206,14 @@ Play.prototype = {
 			game.time.events.add(1000, iDied, this);
 		}
 	
-    lifesText.text = 'Lifes: ' + lifes;
+    lifesText.text = 'Lives: ' + lives;
   }
   
   //события после смерти санты
   function iDied()
   {
 	score = 0;
-	lifes = 2;
+	lives = 2;
 	this.game.state.start('play');
   }
   
