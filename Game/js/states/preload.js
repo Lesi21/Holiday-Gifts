@@ -20,6 +20,9 @@ Preload.prototype = {
 	this.load.image('present3', 'images/present3.png');
 	this.load.image('present4', 'images/present4.png');
 	this.load.image('present5', 'images/present5.png');
+	this.load.image('snowball', 'images/snowball.png');
+	
+	this.load.image('button-pause', 'images/button-pause.png');
 
   },
   
