@@ -74,8 +74,7 @@
 			default: var flyPresent = flyPresents.create(x, y, 'present1');
 		}
         flyPresent.reset(x, y);
-	    flyPresent.body.gravity.y = 500;	//задаем величину гравитации
-        flyPresent.body.velocity.x = gameSpeed * 0.8;
+		flyPresent.body.velocity.setTo(90, 300);
         flyPresent.checkWorldBounds = true;
         flyPresent.outOfBoundsKill = true;
   }

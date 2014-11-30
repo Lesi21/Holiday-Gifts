@@ -116,7 +116,7 @@ Play.prototype = {
 	//управление№3
 	if (cursors.up.isDown) {
 		dude.body.velocity.copyFrom(game.physics.arcade.velocityFromAngle(-90, 250));
-		game.add.tween(dude).to({angle: -6}, 80).start();
+		game.add.tween(dude).to({angle: -6}, 70).start();
     }	else { dude.body.gravity.y = 800; }
 	
 	//сброс подарка, клавиша вниз
