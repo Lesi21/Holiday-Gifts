@@ -1,7 +1,7 @@
 //Здесь добавляем игровые элементы
 //Нужно создать отдельный файл где будем хранить готовые функции
 //Подарки и остальные элементы должны появляться за экраном(справо)
- //На репозитории нужно создать две ветки master and developer(сокращенно dev)
+//На репозитории нужно создать две ветки master and developer(сокращенно dev)
 var lives = 2;//кол-во жизней персонажа 
 var score = 0;//счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
@@ -32,24 +32,43 @@ Play.prototype = {
 	game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
 	//dude.body.gravity.y = 250;	//задаем величину гравитации
 	dude.body.collideWorldBounds = true;
-	this.game.add.existing(dude);
+	dude.anchor.set(1);//только для управления №3
     dude.body.allowGravity = true;
-	dude.scale.setTo(1.3, 1.3);
+	dude.scale.setTo(1.25, 1.25);
+	dude.alpha = 1;//прозрачность
        
 	//Создаем подарки
     presents = this.game.add.group();  
-	presents.enableBody = true;     	
-	timerForPresents = game.time.events.loop(5000, addNewPresents, this);
-		
-	//Создаем препятствия(летящие снежки)
+	presents.enableBody = true;  
+
+	//Создаем скидываемые подарки
+    flyPresents = this.game.add.group();
+	game.physics.arcade.enable(flyPresents, Phaser.Physics.ARCADE);
+	flyPresents.enableBody = true;
+
+	//Создаем летящие снежки
     snowballs = game.add.group();
     snowballs.enableBody = true;
-	timerForSnowballs = game.time.events.loop(4000, addNewSnowballs, this);
+	timerForSnowballs = game.time.events.loop(4500, addNewSnowballs, this);
+	
+	//Создаем тучи
+    clouds = game.add.group();
+    clouds.enableBody = true;
 	
 	//Создаем бонусы
     bonuses = game.add.group();
     bonuses.enableBody = true;
-		
+	
+	//Создаем домики
+    houses = game.add.group();
+    houses.enableBody = true;
+	timerForHouses = game.time.events.loop(5000, addNewHouse, this);
+	
+	//запускаем добавление подарков, препятствий на уровень
+	game.time.events.add(10, addBeforeMainLoop, this);	
+	timerForAllToTheLevel = game.time.events.loop(11000, addAllToTheLevel1, this);
+	game.time.events.loop(5000, gameAcceleration, this);//увеличение скорости игры каждые 5сек
+
 	// управление
  	cursors = game.input.keyboard.createCursorKeys();
 	
@@ -65,7 +84,10 @@ Play.prototype = {
   update: function() {
     this.game.physics.arcade.collide(dude, this.ground);
 	this.game.physics.arcade.overlap(dude, presents, collectPresent, null, this);//проверка взял подарок
-	this.game.physics.arcade.overlap(dude, snowballs, collideSnowball, null, this);//проверка взял подарок
+	this.game.physics.arcade.collide(houses, flyPresents, collideFlyPresent, null, this);//проверка встречи домика с подарком
+	this.game.physics.arcade.overlap(dude, snowballs, collideSnowball, null, this);//проверка встречи со снежком
+	this.game.physics.arcade.overlap(dude, clouds, collideCloud, null, this);//проверка встречи с облаком
+	this.game.physics.arcade.collide(dude, houses, collideHouse, null, this);//проверка встречи с домиком
 	
 	if (dude.angle < 3)//угловой наклон
         dude.angle += 0.6;
@@ -82,22 +104,48 @@ Play.prototype = {
         dude.body.velocity.x = 0;
     } */ 
 	
-	//управление№2
+	/*//управление№2
 	if (cursors.up.isDown)
     {
-		dude.body.acceleration.y = -420;
+
+		dude.body.acceleration.y = -430;
+		
 		game.add.tween(dude).to({angle: -7}, 120).start();
-    }	else { dude.body.acceleration.y = 380;}
+    }	else { dude.body.acceleration.y = 420;	}	*/
+		
+	//управление№3
+	if (cursors.up.isDown) {
+		dude.body.velocity.copyFrom(game.physics.arcade.velocityFromAngle(-90, 250));
+		game.add.tween(dude).to({angle: -6}, 70).start();
+    }	else { dude.body.gravity.y = 800; }
+	
+	//сброс подарка, клавиша вниз
+	if (cursors.down.isDown) {
+		addOneFlyPresent();
+		score -= 1;
+    }
 
   }
 };
 
-  function addNewPresents() {
+  //цикл с подарками и препят. запускается не сразу поэтому добавим эту функцию
+  function addBeforeMainLoop(){
+	    game.time.events.add(1000, addNewClouds, this);
+		game.time.events.add(2000, addNewClouds, this);
+		game.time.events.add(3000, addNewClouds, this);
+		game.time.events.add(6000, addFirstGroup, this);
+		game.time.events.add(6800, addSecondGroup, this);
+		game.time.events.add(8000, addFirstGroup, this);
+		game.time.events.add(9000, addNewClouds, this);
+		game.time.events.add(9500, addNewClouds, this);
+  }
+  
+  function addAllToTheLevel1() {
 		var presentHeight =  Math.random()-0.2;
 		x = WINDOW_WIDTH - (WINDOW_WIDTH/20);
 		y = (Math.random()-0.2) * WINDOW_HEIGHT*0.8;
 		var r = Math.floor(Math.random() * (3 - 1)) + 1;//Math.floor(Math.random() * (max - min)) + min - неуч)					
-		switch(r){
+		/*switch(r){
 			case 1:	{ addFirstGroup();
 					  game.time.events.add(2000, addSecondGroup, this);
 					  game.time.events.add(4000, addFirstGroup, this);
@@ -115,111 +163,63 @@ Play.prototype = {
 					   game.time.events.add(2000, addSecondGroup, this);
 					   game.time.events.add(4000, addFirstGroup, this);	
 					 }
-		}
-			/* //Этот блок из функции НЕ удалять
-			addOnePresent(game.world.width-120, presentHeight * game.world.height);
-			addOnePresent(game.world.width-60, presentHeight * game.world.height);
-            addOnePresent(game.world.width, presentHeight * game.world.height);
-				
-			addOnePresent(game.world.width-120, (presentHeight * game.world.height)-40);
-			addOnePresent(game.world.width-60, (presentHeight * game.world.height)-40);
-            addOnePresent(game.world.width, (presentHeight * game.world.height)-40); 
-				
-			addOnePresent(game.world.width-120, (presentHeight * game.world.height)-80);
-			addOnePresent(game.world.width-60, (presentHeight * game.world.height)-80);
-            addOnePresent(game.world.width, (presentHeight * game.world.height)-80); 
-				*/
-  }
-	
-  //встреча с подарком
-  function collectPresent (dude, present) {
-	present.kill();
-    score += 1;
-	if(dudeSpeed > 130)
-		dudeSpeed = dudeSpeed - 3;
-    scoreText.text = 'Presents: ' + score;
-  }
-  
-  function addOnePresent(x, y) {	
+		}*/
+		
+		game.time.events.add(1000, addNewClouds, this);
+		game.time.events.add(2000, addNewClouds, this);
+		game.time.events.add(3000, addNewClouds, this);
+		game.time.events.add(6000, addFirstGroup, this);
+		game.time.events.add(6800, addSecondGroup, this);
+		game.time.events.add(8000, addFirstGroup, this);
+		game.time.events.add(9000, addNewClouds, this);
+		game.time.events.add(9500, addNewClouds, this);
 
-		var r = Math.floor(Math.random() * (5 - 1)) + 1;					
-		switch(r){
-			case 1:	var present = presents.create(x, y, 'present1');	break;
-			case 2:	var present = presents.create(x, y, 'present2');	break;
-			case 3: var present = presents.create(x, y, 'present3');	break;
-			case 4:	var present = presents.create(x, y, 'present4');	break;
-			case 5:	var present = presents.create(x, y, 'present5');	break;
-			default: var present = presents.create(x, y, 'present1');
-		}
-        present.reset(x, y);
-        present.body.velocity.x = -gameSpeed; //скорость приближения подарков 
-        present.checkWorldBounds = true;
-        present.outOfBoundsKill = true;
+  }
+
+  function addNewHouse() {
+	var house = houses.create(game.world.width, game.world.height - 150, 'house');
+	house.scale.setTo(0.9, 0.75);
+    house.body.velocity.x = -gameSpeed; //скорость приближения снежка 
+	house.body.immovable = true;
+    house.checkWorldBounds = true;
+    house.outOfBoundsKill = true;
   }
   
-  //первая группа подарков
-  function addFirstGroup()
-  {
-		var presentHeight =  Math.random() * ((game.world.height*0.7) - 50) + 50;
-			addOnePresent(game.world.width-120, presentHeight);
-			addOnePresent(game.world.width-60, presentHeight);
-			
-			addOnePresent(game.world.width-120, (presentHeight)-40);
-			
-			addOnePresent(game.world.width-120, (presentHeight)-80);
-  }
-  //вторая группа подарков
-  function addSecondGroup()
-  {
-		var presentHeight =  Math.random() * ((game.world.height*0.7) - 50) + 50;
-			addOnePresent(game.world.width-120, presentHeight);
-			addOnePresent(game.world.width-60, presentHeight);
-            addOnePresent(game.world.width, presentHeight);
-			
-			addOnePresent(game.world.width-120, (presentHeight)-40);
-            addOnePresent(game.world.width, (presentHeight)-40); 
-				
-			addOnePresent(game.world.width-120, (presentHeight)-80);
-			addOnePresent(game.world.width-60, (presentHeight)-80);
-            addOnePresent(game.world.width, (presentHeight)-80); 
-  }
-  
-  function addNewSnowballs()
-  {
-	var snowballHeight =  Math.random() * ((game.world.height*0.7) - 50) + 50;
-	var snowball = snowballs.create(game.world.width, snowballHeight, 'snowball');
-	snowball.scale.setTo(0.4, 0.4);
-    snowball.body.velocity.x = -700; //скорость приближения снежка 
-    snowball.checkWorldBounds = true;
-    snowball.outOfBoundsKill = true;
-  }
-  
-  //встреча со снежком
-  function collideSnowball(dude, snowball) {
-	snowball.kill();
-	if(lives > 1)
-		lives -= 1;
-	else 
-		{
-			dude.destroy();
-			game.add.text(game.world.centerX - 100, game.world.centerY, "You killed Santa.", { fontSize: '32px', fill: '#b30030' });
-			game.time.events.add(1000, iDied, this);
-		}
+  //встреча с домиком
+  function collideHouse(dude, house) {
+	game.add.tween(dude).to( { alpha: 0 }, 1400, Phaser.Easing.Linear.None, true, 0, 1000, true);//плавное исчезновение
+	lives = 0;
+	game.add.text(game.world.centerX - 100, game.world.centerY, "You killed Santa.", { fontSize: '32px', fill: '#b30030' });
+	game.time.events.add(1500, iDied, this);
 	
     lifesText.text = 'Lives: ' + lives;
   }
   
   //события после смерти санты
-  function iDied()
-  {
+  function iDied() {
 	score = 0;
 	lives = 2;
+	gameSpeed = 250;
+	backgroundSpeed = 50;
 	this.game.state.start('play');
   }
   
-  
+
+  //ускоряем игру
+  function gameAcceleration() {
+	gameSpeed += gameSpeed * 0.07;
+	backgroundSpeed += backgroundSpeed * 0.07;
+  }
   
 
+    //проверяет на пересечение, возвращает значение boolean(пока не используется)
+  function checkOverlap(spriteA, spriteB) {
+    var boundsA = spriteA.getBounds();
+    var boundsB = spriteB.getBounds();
+
+    return Phaser.Rectangle.intersects(boundsA, boundsB);
+  }
+  
   function managePause(){
 		game.paused = true;
 		var pausedText = game.add.text(100, 250, "Game paused.\nTap anywhere to continue.");
