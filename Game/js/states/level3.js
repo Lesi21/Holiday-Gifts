@@ -63,7 +63,6 @@ Play.prototype = {
 	//Создаем домики
     houses = game.add.group();
     houses.enableBody = true;
-    
 	timerForHouses = game.time.events.loop(5000, addNewHouse, this);
 	
 	//запускаем добавление подарков, препятствий на уровень

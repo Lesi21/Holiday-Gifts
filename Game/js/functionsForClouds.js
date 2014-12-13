@@ -11,13 +11,14 @@
   //встреча с облаком
   function collideCloud(dude, cloud) {
 	cloud.kill();
+	s_score-=50;
 	if(lives > 1)
 		lives -= 1;
 	else 
 		{
 			//dude.destroy();
 			game.add.tween(dude).to( { alpha: 0 }, 1400, Phaser.Easing.Linear.None, true, 0, 1000, true);
-			game.add.text(game.world.centerX - 100, game.world.centerY, "You killed Santa.", { fontSize: '32px', fill: '#b30030' });
+			game.add.text(game.world.centerX, game.world.centerY-350, "You killed Santa(", { fontSize: '32px', fill: '#b30030' });
 			game.time.events.add(1500, iDied, this);
 		}
 	
