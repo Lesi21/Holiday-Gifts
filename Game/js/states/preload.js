@@ -12,8 +12,13 @@ Preload.prototype = {
     //this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     //this.load.setPreloadSprite(this.asset);
 	
+	//снег
+	game.load.image('sky', 'images/sky3.png');
+    game.load.spritesheet('snowflakes', 'images/snowflakes.png', 17, 17);
+    game.load.spritesheet('snowflakes_large', 'images/snowflakes_large.png', 64, 64);
+	//снег
+
 	this.load.image('dude', 'images/santa.png');
-    this.load.image('background', 'images/Sky2.png');
     this.load.image('ground', 'images/ground.png');
 	
 	this.load.image('present1', 'images/present1.png');
