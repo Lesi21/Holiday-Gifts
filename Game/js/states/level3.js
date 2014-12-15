@@ -3,12 +3,11 @@
 //Подарки и остальные элементы должны появляться за экраном(справо)
 
 var lives = 2;//кол-во жизней персонажа 
-var score = 1;//счет игры
-var s_score = 0;//общий счет игры
+var score = 0;//счет игры
+var s_score=0;//общий счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
 var backgroundSpeed = 50;//скорость прокрутки фона
-var k = 0;
 
 function Play() {
 }
@@ -64,11 +63,7 @@ Play.prototype = {
 	//Создаем домики
     houses = game.add.group();
     houses.enableBody = true;
-    
 	timerForHouses = game.time.events.loop(5000, addNewHouse, this);
-	
-	//таймер для контроля сброса подарков
-	game.time.events.loop(500, newK, this);
 	
 	//запускаем добавление подарков, препятствий на уровень
 	game.time.events.add(10, addBeforeMainLoop, this);	
@@ -84,7 +79,7 @@ Play.prototype = {
 	S_score = game.add.text(350, 16, 'Score: ' + s_score, { fontSize: '26px', fill: '#000' });
 	//кнопка паузы
 	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
-
+	
   },
   
   update: function() {
@@ -121,30 +116,19 @@ Play.prototype = {
 		
 	//управление№3
 	if (cursors.up.isDown) {
-		dude.body.gravity.y = 0;
 		dude.body.velocity.copyFrom(game.physics.arcade.velocityFromAngle(-90, 250));
 		game.add.tween(dude).to({angle: -6}, 70).start();
     }	else { dude.body.gravity.y = 800; }
 	
 	//сброс подарка, клавиша вниз
 	if (cursors.down.isDown) {
-		//скидываем то что собрали 
-		if(k == 0 && score > 0) {
-			addOneFlyPresent();
-			score -= 1;
-			scoreText.text = 'Presents: ' + score;
-			k = 1;
-		}
-
+		addOneFlyPresent();
+		score -= 1;
     }
 
   }
 };
-	//флаг на сброс подарков
-	function newK()
-	{
-		k = 0;
-	}	
+
   //цикл с подарками и препят. запускается не сразу поэтому добавим эту функцию
   function addBeforeMainLoop(){
 	    game.time.events.add(1000, addNewClouds, this);

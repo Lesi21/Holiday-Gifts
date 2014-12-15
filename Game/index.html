@@ -9,6 +9,9 @@
 	<script type="text/javascript" src="js/states/menu.js"></script>
 	<script type="text/javascript" src="js/states/levelMap.js"></script>
 	<script type="text/javascript" src="js/states/play.js"></script>
+	<script type="text/javascript" src="js/states/authors.js"></script>
+	<script type="text/javascript" src="js/states/level2.js"></script>
+
 	<script type="text/javascript" src="js/functionsForPresents.js"></script>
 	<script type="text/javascript" src="js/functionsForClouds.js"></script>
 	<script type="text/javascript" src="js/functionsForSnowballs.js"></script>
@@ -25,7 +28,9 @@
 	game.state.add('menu', Menu);
 	game.state.add('play', Play);
 	game.state.add('preload', Preload);
+	game.state.add('authors', Authors);//авторы
 	game.state.add('levelMap', LevelMap);
+	game.state.add('level2', Level2);
 
 	game.state.start('boot');//запуск Boot (смотри js/states/boot.js) 
 </script>

@@ -3,16 +3,16 @@
 //Подарки и остальные элементы должны появляться за экраном(справо)
 
 var lives = 2;//кол-во жизней персонажа 
-var score = 1;//счет игры
-var s_score = 0;//общий счет игры
+var score = 0;//счет игры
+var s_score=0;//общий счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
 var backgroundSpeed = 50;//скорость прокрутки фона
 var k = 0;
 
-function Play() {
+function Level2() {
 }
-Play.prototype = {
+Level2.prototype = {
   create: function() {	
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     	
@@ -71,8 +71,8 @@ Play.prototype = {
 	game.time.events.loop(500, newK, this);
 	
 	//запускаем добавление подарков, препятствий на уровень
-	game.time.events.add(10, addBeforeMainLoop, this);	
-	timerForAllToTheLevel = game.time.events.loop(11000, addAllToTheLevel1, this);
+	game.time.events.add(10, addBeforeMainLoop2, this);	
+	timerForAllToTheLevel = game.time.events.loop(11000, addAllToTheLevel2, this);
 	game.time.events.loop(5000, gameAcceleration, this);//увеличение скорости игры каждые 5сек
 
 	// управление
@@ -128,11 +128,10 @@ Play.prototype = {
 	
 	//сброс подарка, клавиша вниз
 	if (cursors.down.isDown) {
-		//скидываем то что собрали 
+
 		if(k == 0 && score > 0) {
 			addOneFlyPresent();
 			score -= 1;
-			scoreText.text = 'Presents: ' + score;
 			k = 1;
 		}
 
@@ -146,7 +145,7 @@ Play.prototype = {
 		k = 0;
 	}	
   //цикл с подарками и препят. запускается не сразу поэтому добавим эту функцию
-  function addBeforeMainLoop(){
+  function addBeforeMainLoop2(){
 	    game.time.events.add(1000, addNewClouds, this);
 		game.time.events.add(2000, addNewClouds, this);
 		game.time.events.add(3000, addNewClouds, this);
@@ -157,7 +156,7 @@ Play.prototype = {
 		game.time.events.add(9500, addNewClouds, this);
   }
   
-  function addAllToTheLevel1() {
+  function addAllToTheLevel2() {
 		var presentHeight =  Math.random()-0.2;
 		x = WINDOW_WIDTH - (WINDOW_WIDTH/20);
 		y = (Math.random()-0.2) * WINDOW_HEIGHT*0.8;
@@ -193,53 +192,4 @@ Play.prototype = {
 
   }
 
-  function addNewHouse() {
-	var house = houses.create(game.world.width, game.world.height - 150, 'house');
-	house.scale.setTo(0.9, 0.75);
-    house.body.velocity.x = -gameSpeed; //скорость приближения снежка 
-	house.body.immovable = true;
-    house.checkWorldBounds = true;
-    house.outOfBoundsKill = true;
-  }
-  
-  //встреча с домиком
-  function collideHouse(dude, house) {
-	game.add.tween(dude).to( { alpha: 0 }, 1400, Phaser.Easing.Linear.None, true, 0, 1000, true);//плавное исчезновение
-	lives = 0;
-	game.add.text(game.world.centerX, game.world.centerY-300, "You killed Santa(", { fontSize: '32px', fill: '#b30030' });
-	game.time.events.add(1500, iDied, this);
-	
-    lifesText.text = 'Lives: ' + lives;
-  }
-  
-  //события после смерти санты
-  function iDied() {
-	score = 0;
-	lives = 2;
-	s_score = 0;
-	gameSpeed = 250;
-	backgroundSpeed = 50;
-	this.game.state.start('play');
-  }
-  
 
-  //ускоряем игру
-  function gameAcceleration() {
-	gameSpeed += gameSpeed * 0.07;
-	backgroundSpeed += backgroundSpeed * 0.07;
-  }
-  
-
-    //проверяет на пересечение, возвращает значение boolean(пока не используется)
-  function checkOverlap(spriteA, spriteB) {
-    var boundsA = spriteA.getBounds();
-    var boundsB = spriteB.getBounds();
-
-    return Phaser.Rectangle.intersects(boundsA, boundsB);
-  }
-  
-  function managePause(){
-		game.paused = true;
-		var pausedText = game.add.text(game.world.centerX, game.world.centerY-300, "          Game paused\nTap anywhere to continue.", { fontSize: '34px', fill: '#b30030' });
-		game.input.onDown.add(function(){pausedText.destroy();	game.paused = false;}, this);
-  }

@@ -26,12 +26,20 @@ Preload.prototype = {
 	this.load.image('cloud', 'images/cloud.png');
 	this.load.image('house', 'images/house.png');
 	
+	//кнопки управления для меню
 	this.load.image('button-pause', 'images/button-pause.png');
 	this.load.image('button-start', 'images/button-start.png');
 	this.load.image('button-levelMap', 'images/button-levelMap.png');
 	this.load.image('button-authors', 'images/button-authors.png');
 	this.load.image('button-exit', 'images/button-exit.png');
 
+	//кнопки управления для карты уровней
+	this.load.image('level1', 'images/levelMapButtons/level1.png');
+	this.load.image('level2', 'images/levelMapButtons/level2.png');
+	this.load.image('level3', 'images/levelMapButtons/level3.png');
+	this.load.image('level4', 'images/levelMapButtons/level4.png');
+	this.load.image('level5', 'images/levelMapButtons/level5.png');
+	this.load.image('level6', 'images/levelMapButtons/level6.png');
   },
   
   create: function() {
@@ -39,8 +47,8 @@ Preload.prototype = {
   },
   update: function() {
     //if(!!this.ready) {
-      //this.game.state.start('menu');
-	  this.game.state.start('play');
+      this.game.state.start('menu');
+	  //this.game.state.start('play');
     //}
   },
   

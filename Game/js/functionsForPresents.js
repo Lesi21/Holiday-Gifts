@@ -82,6 +82,9 @@
   
   
   			/* //Этот блок из функции НЕ удалять
+
+  			//вот гавнюк, взял и удалил мою фичу
+  			
 			addOnePresent(game.world.width-120, presentHeight * game.world.height);
 			addOnePresent(game.world.width-60, presentHeight * game.world.height);
             addOnePresent(game.world.width, presentHeight * game.world.height);
