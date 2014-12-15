@@ -3,12 +3,27 @@
 //Подарки и остальные элементы должны появляться за экраном(справо)
 
 var lives = 2;//кол-во жизней персонажа 
+<<<<<<< HEAD
 var score = 1;//счет игры
 var s_score = 0;//общий счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
 var backgroundSpeed = 50;//скорость прокрутки фона
 var k = 0;
+=======
+var score = 0;//кол-во подарков
+var s_score=0;//общий счет игры
+var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
+var dudeSpeed = 215;//величина(скорость) подьема персонажа
+var backgroundSpeed = 50;//скорость прокрутки фона
+//переменные для снежка
+var max = 0;
+var front_emitter;
+var mid_emitter;
+var back_emitter;
+var update_interval = 4 * 60;
+var i = 0;
+>>>>>>> origin/master
 
 function Play() {
 }
@@ -17,7 +32,7 @@ Play.prototype = {
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     	
 	//Задаем фон
-	var cityField = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
+	var cityField = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'sky');
 	cityField.autoScroll(-backgroundSpeed, 0);
 	this.game.physics.arcade.enableBody(cityField);
 	cityField.body.allowGravity = false;
@@ -38,6 +53,7 @@ Play.prototype = {
     dude.body.allowGravity = true;
 	dude.scale.setTo(1.25, 1.25);
 	dude.alpha = 1;//прозрачность
+	dude.body.gravity.y = 800;
        
 	//Создаем подарки
     presents = this.game.add.group();  
@@ -84,7 +100,47 @@ Play.prototype = {
 	S_score = game.add.text(350, 16, 'Score: ' + s_score, { fontSize: '26px', fill: '#000' });
 	//кнопка паузы
 	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
+<<<<<<< HEAD
 
+=======
+	
+//код ответственный за снежок
+    back_emitter = game.add.emitter(game.world.centerX, -32, 600);
+    back_emitter.makeParticles('snowflakes', [0, 1, 2, 3, 4, 5]);
+    back_emitter.maxParticleScale = 0.6;
+    back_emitter.minParticleScale = 0.2;
+    back_emitter.setYSpeed(20, 100);
+    back_emitter.gravity = 0;
+    back_emitter.width = game.world.width * 1.5;
+    back_emitter.minRotation = 0;
+    back_emitter.maxRotation = 40;
+
+    mid_emitter = game.add.emitter(game.world.centerX, -32, 250);
+    mid_emitter.makeParticles('snowflakes', [0, 1, 2, 3, 4, 5]);
+    mid_emitter.maxParticleScale = 1.2;
+    mid_emitter.minParticleScale = 0.8;
+    mid_emitter.setYSpeed(50, 150);
+    mid_emitter.gravity = 0;
+    mid_emitter.width = game.world.width * 1.5;
+    mid_emitter.minRotation = 0;
+    mid_emitter.maxRotation = 40;
+
+    front_emitter = game.add.emitter(game.world.centerX, -32, 50);
+    front_emitter.makeParticles('snowflakes_large', [0, 1, 2, 3, 4, 5]);
+    front_emitter.maxParticleScale = 1;
+    front_emitter.minParticleScale = 0.5;
+    front_emitter.setYSpeed(100, 200);
+    front_emitter.gravity = 0;
+    front_emitter.width = game.world.width * 1.5;
+    front_emitter.minRotation = 0;
+    front_emitter.maxRotation = 40;
+
+    changeWindDirection();
+
+    back_emitter.start(false, 14000, 20);
+    mid_emitter.start(false, 12000, 40);
+    front_emitter.start(false, 6000, 1000);
+>>>>>>> origin/master
   },
   
   update: function() {
@@ -97,6 +153,17 @@ Play.prototype = {
 	
 	if (dude.angle < 3)//угловой наклон
         dude.angle += 0.6;
+
+
+
+    i++;
+
+    if (i === update_interval)
+    {
+        changeWindDirection();
+        update_interval = Math.floor(Math.random() * 20) * 60; // 0 - 20sec @ 60fps
+        i = 0;
+    }
 	//управление №1; на этом управлении нужно разблокировать гравитацию строка 33
 	/*if (cursors.up.isDown)
     {
@@ -120,13 +187,16 @@ Play.prototype = {
     }	else { dude.body.acceleration.y = 420;	}	*/
 		
 	//управление№3
+	
 	if (cursors.up.isDown) {
 		dude.body.gravity.y = 0;
 		dude.body.velocity.copyFrom(game.physics.arcade.velocityFromAngle(-90, 250));
 		game.add.tween(dude).to({angle: -6}, 70).start();
-    }	else { dude.body.gravity.y = 800; }
+    }	//else { dude.body.gravity.y = 800;
+    //ficha=false; }
 	
 	//сброс подарка, клавиша вниз
+<<<<<<< HEAD
 	if (cursors.down.isDown) {
 		//скидываем то что собрали 
 		if(k == 0 && score > 0) {
@@ -136,15 +206,54 @@ Play.prototype = {
 			k = 1;
 		}
 
+=======
+	else if (cursors.down.isDown) {		
+		if(score>0)
+		{
+		addOneFlyPresent();
+		score -= 1;
+		scoreText.text = 'Presents: ' + score;
+		}	
+>>>>>>> origin/master
     }
 
   }
 };
+<<<<<<< HEAD
 	//флаг на сброс подарков
 	function newK()
 	{
 		k = 0;
 	}	
+=======
+function changeWindDirection() {
+
+    var multi = Math.floor((max + 200) / 4),
+        frag = (Math.floor(Math.random() * 100) - multi);
+    max = max + frag;
+
+    if (max > 200) max = 150;
+    if (max < -200) max = -150;
+
+    setXSpeed(back_emitter, max);
+    setXSpeed(mid_emitter, max);
+    setXSpeed(front_emitter, max);
+
+}
+
+function setXSpeed(emitter, max) {
+
+    emitter.setXSpeed(max - 20, max);
+    emitter.forEachAlive(setParticleXSpeed, this, max);
+
+}
+
+function setParticleXSpeed(particle, max) {
+
+    particle.body.velocity.x = max - Math.floor(Math.random() * 30);
+
+}
+>>>>>>> origin/master
   //цикл с подарками и препят. запускается не сразу поэтому добавим эту функцию
   function addBeforeMainLoop(){
 	    game.time.events.add(1000, addNewClouds, this);
