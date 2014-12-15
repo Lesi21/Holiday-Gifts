@@ -1,8 +1,8 @@
     //встреча домика с подарком
   function collideFlyPresent(house, flyPresent) {
 	flyPresent.kill();
-    s_score += 10;
-    S_score.text = 'Score: ' + s_score;
+    score += 10;
+    scoreText.text = 'Presents: ' + score;
   }
 
   //встреча с подарком
@@ -54,9 +54,7 @@
 			
 			addOnePresent(game.world.width-120, (presentHeight)-40);
             addOnePresent(game.world.width, (presentHeight)-40); 
-
-	//А СПОНСОР ЭТОЙ СТРОЧКИ   - "Playboy для православных"."Playboy для православных"-у нас только текст.	
-			
+				
 			addOnePresent(game.world.width-120, (presentHeight)-80);
 			addOnePresent(game.world.width-60, (presentHeight)-80);
             addOnePresent(game.world.width, (presentHeight)-80); 
@@ -67,22 +65,18 @@
 		var r = Math.floor(Math.random() * (5 - 1)) + 1;	
 		var x = dude.x;
 		var y = dude.y;
-		var flyPresent;
-
 		switch(r){
-			case 1:	flyPresent = flyPresents.create(x, y, 'present1');	break;
-			case 2:	flyPresent = flyPresents.create(x, y, 'present2');	break;
-			case 3: flyPresent = flyPresents.create(x, y, 'present3');	break;
-			case 4:	flyPresent = flyPresents.create(x, y, 'present4');	break;
-			case 5:	flyPresent = flyPresents.create(x, y, 'present5');	break;
-			default: flyPresent = flyPresents.create(x, y, 'present1');
+			case 1:	var flyPresent = flyPresents.create(x, y, 'present1');	break;
+			case 2:	var flyPresent = flyPresents.create(x, y, 'present2');	break;
+			case 3: var flyPresent = flyPresents.create(x, y, 'present3');	break;
+			case 4:	var flyPresent = flyPresents.create(x, y, 'present4');	break;
+			case 5:	var flyPresent = flyPresents.create(x, y, 'present5');	break;
+			default: var flyPresent = flyPresents.create(x, y, 'present1');
 		}
-		
-			flyPresent.reset(x, y);
-			flyPresent.body.velocity.setTo(90, 300);
-        	flyPresent.checkWorldBounds = true;
-        	flyPresent.outOfBoundsKill = true;
-		       
+        flyPresent.reset(x, y);
+		flyPresent.body.velocity.setTo(90, 300);
+        flyPresent.checkWorldBounds = true;
+        flyPresent.outOfBoundsKill = true;
   }
   
   
