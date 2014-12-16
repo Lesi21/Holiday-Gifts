@@ -14,7 +14,6 @@ Preload.prototype = {
 	
 	game.load.audio('boden', ['audio/sound1.mp3', 'audio/sound1.ogg']);
 	game.load.audio('soundmenu', ['audio/sound2.mp3', 'audio/sound2.ogg']);
-	//различные звуки
 	game.load.audio('soundpresent', ['audio/presents.ogg']);
 	game.load.audio('sounddie', ['audio/die.ogg']);
 	game.load.audio('soundhit', ['audio/hit.mp3']);
