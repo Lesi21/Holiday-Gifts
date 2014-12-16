@@ -14,6 +14,12 @@ Preload.prototype = {
 	
 	game.load.audio('boden', ['audio/sound1.mp3', 'audio/sound1.ogg']);
 	game.load.audio('soundmenu', ['audio/sound2.mp3', 'audio/sound2.ogg']);
+	//различные звуки
+	game.load.audio('soundpresent', ['audio/presents.ogg']);
+	game.load.audio('sounddie', ['audio/die.ogg']);
+	game.load.audio('soundhit', ['audio/hit.mp3']);
+
+	game.load.audio('gameover', ['audio/gameover.mp3']);
 
 	this.load.image('dude', 'images/santa.png');
     this.load.image('background', 'images/sky3.png');

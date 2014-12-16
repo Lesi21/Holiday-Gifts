@@ -7,6 +7,7 @@
 
   //встреча с подарком
   function collectPresent (dude, present) {
+  	sound_for_present.play();
 	present.kill();
     score += 1;
 	//убрал уменьшение скорости, т.к. становится неинтересно играть

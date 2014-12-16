@@ -20,11 +20,18 @@ var i = 0;
 
 
 var music;
+var sound_for_present;
+var sound_for_die;
+var sound_for_hit;
+
+var sound_game_over;
+
 
 function Play() {
 }
 Play.prototype = {
   create: function() {	
+
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     	
 	//Задаем фон
@@ -39,7 +46,6 @@ Play.prototype = {
 	this.ground.autoScroll(-gameSpeed, 0);
 	this.game.physics.arcade.enableBody(this.ground);
 	this.ground.body.immovable = true;
-	
     //Создаем персонажа
 	dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
 	game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
@@ -134,10 +140,19 @@ Play.prototype = {
     mid_emitter.start(false, 12000, 40);
     front_emitter.start(false, 6000, 1000);
 
-musicmenu.stop();
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	sound_for_present=game.add.audio('soundpresent');
+	sound_for_die=game.add.audio('sounddie');;
+	sound_for_hit=game.add.audio('soundhit');;
+	sound_for_present.volume+=0.5;
+	sound_game_over=game.add.audio('gameover');
+
+	musicmenu.stop();
 	music = game.add.audio('boden');
-music.stop();
+	music.stop();
+	music.volume-=0.5;
     music.play();
+    
   },
   
   update: function() {
@@ -192,10 +207,12 @@ music.stop();
 	if (cursors.down.isDown) {
 		//скидываем то что собрали 
 		if(k == 0 && score > 0) {
+			
 			addOneFlyPresent();
 			score -= 1;
 			scoreText.text = 'Presents: ' + score;
 			k = 1;
+			sound_for_hit.play();
 		}
 
     }
@@ -299,7 +316,7 @@ function setParticleXSpeed(particle, max) {
 	
     lifesText.text = 'Lives: ' + lives;
   }
-  
+ 
   //события после смерти санты
   function iDied() {
 	score = 0;
@@ -307,9 +324,10 @@ function setParticleXSpeed(particle, max) {
 	s_score = 0;
 	gameSpeed = 250;
 	music.stop();
+	//эта строчка отвечает за проигрывание музыки
+	//sound_game_over.play();
 	backgroundSpeed = 50;
 	this.game.state.start('play');
-
   }
   
 
@@ -339,11 +357,12 @@ var flag=true;//музыка включена
   		{
   			music.stop();
   			flag=false;
-  			//sound.src.='soundOFF';
+  			sound.loadTexture('soundOFF');
   		}
   		else
   		{
   			music.play();
   			flag=true;
+  			sound.loadTexture('button-sound'); 			
   		}
   }
