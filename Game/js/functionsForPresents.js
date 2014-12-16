@@ -1,8 +1,8 @@
     //встреча домика с подарком
   function collideFlyPresent(house, flyPresent) {
 	flyPresent.kill();
-    score += 10;
-    scoreText.text = 'Presents: ' + score;
+    s_score += 10;
+    S_score.text = 'Score: ' + s_score;
   }
 
   //встреча с подарком

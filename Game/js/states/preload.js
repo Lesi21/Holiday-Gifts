@@ -12,8 +12,11 @@ Preload.prototype = {
     //this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     //this.load.setPreloadSprite(this.asset);
 	
+	game.load.audio('boden', ['audio/sound1.mp3', 'audio/sound1.ogg']);
+	game.load.audio('soundmenu', ['audio/sound2.mp3', 'audio/sound2.ogg']);
+
 	this.load.image('dude', 'images/santa.png');
-    this.load.image('background', 'images/Sky2.png');
+    this.load.image('background', 'images/sky3.png');
     this.load.image('ground', 'images/ground.png');
 	
 	this.load.image('present1', 'images/present1.png');
@@ -25,7 +28,14 @@ Preload.prototype = {
 	this.load.image('snowball', 'images/snowball.png');
 	this.load.image('cloud', 'images/cloud.png');
 	this.load.image('house', 'images/house.png');
-	
+
+    game.load.spritesheet('snowflakes', 'images/snowflakes.png', 17, 17);
+    game.load.spritesheet('snowflakes_large', 'images/snowflakes_large.png', 64, 64);
+
+	this.load.image('button-sound', 'images/sound.png');
+    this.load.image('soundOFF', 'images/soundOff.png');
+
+	this.load.image('backmenu', 'images/backmenu.png');
 	//кнопки управления для меню
 	this.load.image('button-pause', 'images/button-pause.png');
 	this.load.image('button-start', 'images/button-start.png');
