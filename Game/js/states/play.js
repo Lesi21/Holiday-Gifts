@@ -2,8 +2,10 @@
 //Нужно создать отдельный файл где будем хранить готовые функции
 //Подарки и остальные элементы должны появляться за экраном(справо)
 
-var lives = 2;//кол-во жизней персонажа 
-var score = 1;//счет игры
+var flag=true;//музыка в игре включена
+var length_of_level;//длительность уровня
+var lives = 3;//кол-во жизней персонажа 
+var score = 0;//счет игры
 var s_score = 0;//общий счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
@@ -49,7 +51,7 @@ Play.prototype = {
     //Создаем персонажа
 	dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
 	game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
-	//dude.body.gravity.y = 250;	//задаем величину гравитации
+	dude.body.gravity.y = 250;	//задаем величину гравитации
 	dude.body.collideWorldBounds = true;
 	dude.anchor.set(1);//только для управления №3
     dude.body.allowGravity = true;
@@ -90,7 +92,7 @@ Play.prototype = {
 	//запускаем добавление подарков, препятствий на уровень
 	game.time.events.add(10, addBeforeMainLoop, this);	
 	timerForAllToTheLevel = game.time.events.loop(11000, addAllToTheLevel1, this);
-	game.time.events.loop(5000, gameAcceleration, this);//увеличение скорости игры каждые 5сек
+	game.time.events.loop(6500, gameAcceleration, this);//увеличение скорости игры каждые 6,5 сек
 
 	// управление
  	cursors = game.input.keyboard.createCursorKeys();
@@ -99,6 +101,7 @@ Play.prototype = {
 	scoreText = game.add.text(16, 16, 'Presents: ' + score, { fontSize: '26px', fill: '#000' });
 	lifesText = game.add.text(200, 16, 'Lives: ' + lives, { fontSize: '26px', fill: '#000' });
 	S_score = game.add.text(350, 16, 'Score: ' + s_score, { fontSize: '26px', fill: '#000' });
+
 	//кнопка паузы
 	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
 	sound = game.add.button(WINDOW_WIDTH - 280, 16, 'button-sound', SetSoundOff, this);
@@ -167,13 +170,20 @@ Play.prototype = {
         dude.angle += 0.6;
 
     i++;
-
     if (i === update_interval)
     {
         changeWindDirection();
         update_interval = Math.floor(Math.random() * 20) * 60; // 0 - 20sec @ 60fps
         i = 0;
     }
+
+
+    length_of_level++;
+	if((length_of_level==15) ||(s_score==30))//условие окончания игры писать тут
+	{
+
+		game.paused = true;
+	}
 	//управление №1; на этом управлении нужно разблокировать гравитацию строка 33
 	/*if (cursors.up.isDown)
     {
@@ -214,11 +224,11 @@ Play.prototype = {
 			k = 1;
 			sound_for_hit.play();
 		}
-
     }
 
   }
 };
+
 function changeWindDirection() {
 
     var multi = Math.floor((max + 200) / 4),
@@ -246,12 +256,12 @@ function setParticleXSpeed(particle, max) {
 
 }
 	//флаг на сброс подарков
-	function newK()
+function newK()
 	{
 		k = 0;
 	}	
   //цикл с подарками и препят. запускается не сразу поэтому добавим эту функцию
-  function addBeforeMainLoop(){
+function addBeforeMainLoop(){
 	    game.time.events.add(1000, addNewClouds, this);
 		game.time.events.add(2000, addNewClouds, this);
 		game.time.events.add(3000, addNewClouds, this);
@@ -262,7 +272,7 @@ function setParticleXSpeed(particle, max) {
 		game.time.events.add(9500, addNewClouds, this);
   }
   
-  function addAllToTheLevel1() {
+function addAllToTheLevel1() {
 		var presentHeight =  Math.random()-0.2;
 		x = WINDOW_WIDTH - (WINDOW_WIDTH/20);
 		y = (Math.random()-0.2) * WINDOW_HEIGHT*0.8;
@@ -298,7 +308,7 @@ function setParticleXSpeed(particle, max) {
 
   }
 
-  function addNewHouse() {
+ function addNewHouse() {
 	var house = houses.create(game.world.width, game.world.height - 150, 'house');
 	house.scale.setTo(0.9, 0.75);
     house.body.velocity.x = -gameSpeed; //скорость приближения снежка 
@@ -308,7 +318,7 @@ function setParticleXSpeed(particle, max) {
   }
   
   //встреча с домиком
-  function collideHouse(dude, house) {
+function collideHouse(dude, house) {
 	game.add.tween(dude).to( { alpha: 0 }, 1400, Phaser.Easing.Linear.None, true, 0, 1000, true);//плавное исчезновение
 	lives = 0;
 	game.add.text(game.world.centerX, game.world.centerY-300, "You killed Santa(", { fontSize: '32px', fill: '#b30030' });
@@ -324,7 +334,7 @@ function setParticleXSpeed(particle, max) {
 	s_score = 0;
 	gameSpeed = 250;
 	music.stop();
-	//эта строчка отвечает за проигрывание музыки
+	//эта строчка отвечает за проигрывание музыки смерти. Пока не работает т.к. игра начинается не успев до конца проиграться мелодия
 	//sound_game_over.play();
 	backgroundSpeed = 50;
 	this.game.state.start('play');
@@ -334,7 +344,7 @@ function setParticleXSpeed(particle, max) {
   //ускоряем игру
   function gameAcceleration() {
 	gameSpeed += gameSpeed * 0.05;
-	backgroundSpeed += backgroundSpeed * 0.07;
+	backgroundSpeed += backgroundSpeed * 0.06;
   }
   
 
@@ -347,11 +357,44 @@ function setParticleXSpeed(particle, max) {
   }
   
   function managePause(){
+  		
+        var menu = game.add.sprite(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'button-start');
+        menu.anchor.setTo(0.5, 0.5);
 		game.paused = true;
-		var pausedText = game.add.text(game.world.centerX, game.world.centerY-300, "          Game paused\nTap anywhere to continue.", { fontSize: '34px', fill: '#b30030' });
-		game.input.onDown.add(function(){pausedText.destroy();	game.paused = false;}, this);
+
+			if(game.paused){
+            var x1 = WINDOW_WIDTH/2 - 270/2, x2 = WINDOW_WIDTH/2 + 270/2,
+                y1 = WINDOW_HEIGHT/2 - 180/2, y2 = WINDOW_HEIGHT/2 + 180/2;
+
+            // Check if the click was inside the menu
+            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                // The choicemap is an array that will help us see which item was clicked
+                var choisemap = ['one', 'two', 'three', 'four', 'five', 'six'];
+
+                // Get menu local coordinates for the click
+                var x = event.x - x1,
+                    y = event.y - y1;
+
+                // Calculate the choice 
+                var choise = Math.floor(x / 90) + 3*Math.floor(y / 90);
+
+                // Display the choice
+                choiseLabel.text = 'You chose menu item: ' + choisemap[choise];
+            }
+            else{
+                // Remove the menu and the label
+                menu.destroy();
+                choiseLabel.destroy();
+
+                // Unpause the game
+                game.paused = false;
+            }
+        }
+
+		//var pausedText = game.add.text(game.world.centerX, game.world.centerY-300, "          Game paused\nTap anywhere to continue.", { fontSize: '34px', fill: '#b30030' });
+		//game.input.onDown.add(function(){pausedText.destroy();	game.paused = false;}, this);
   }
-var flag=true;//музыка включена
+
   function SetSoundOff(){
   	if(flag) 
   		{

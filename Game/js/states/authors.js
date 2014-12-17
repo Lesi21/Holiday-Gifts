@@ -3,9 +3,10 @@ function Authors() {}
 
 Authors.prototype = {
   create: function() {
-	game.stage.backgroundColor = '#00CED1';
-	game.add.button(WINDOW_WIDTH*0.70, WINDOW_HEIGHT*0.80, 'button-exit', this.startMenu, this);
-  game.add.text(game.world.centerX*0.35, game.world.centerY*0.4, "Игра <<Holiday Gifts>> разработана студентами ФКНТ Доннту", { fontSize: '32px', fill: '#b30030' });
+var back = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'backAbout');
+
+	game.add.button(WINDOW_WIDTH*0.65, WINDOW_HEIGHT*0.75, 'button-exit', this.startMenu, this);
+  game.add.text(game.world.centerX*0.35, game.world.centerY*0.3, "Игра <<Holiday Gifts>> разработана студентами ФКНТ ДоННТУ", { fontSize: '32px', fill: '#b30030' });
 	game.add.text(game.world.centerX*0.65, game.world.centerY*0.55, "Келембет Сергей ПОСс-14а", { fontSize: '32px', fill: '#b30030' });
   game.add.text(game.world.centerX*0.65, game.world.centerY*0.7, "Лукьяненко Евгений ПОСс-14б", { fontSize: '32px', fill: '#b30030' });
   game.add.text(game.world.centerX*0.65, game.world.centerY*0.85, "Лукьянченко Любовь ПОСс-14а", { fontSize: '32px', fill: '#b30030' });
@@ -15,6 +16,7 @@ Authors.prototype = {
   },
   
   startMenu: function() {
+    musicmenu.stop();
     this.game.state.start('menu');
   },
   

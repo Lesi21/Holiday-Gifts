@@ -2,8 +2,10 @@
 //Нужно создать отдельный файл где будем хранить готовые функции
 //Подарки и остальные элементы должны появляться за экраном(справо)
 
-var lives = 2;//кол-во жизней персонажа 
-var score = 1;//счет игры
+var flag=true;//музыка в игре включена
+var length_of_level;//длительность уровня
+var lives = 3;//кол-во жизней персонажа 
+var score = 0;//счет игры
 var s_score = 0;//общий счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
@@ -90,7 +92,7 @@ Level2.prototype = {
 	//запускаем добавление подарков, препятствий на уровень
 	game.time.events.add(10, addBeforeMainLoop, this);	
 	timerForAllToTheLevel = game.time.events.loop(11000, addAllToTheLevel1, this);
-	game.time.events.loop(5000, gameAcceleration, this);//увеличение скорости игры каждые 5сек
+	game.time.events.loop(6500, gameAcceleration, this);//увеличение скорости игры каждые 6,5 сек
 
 	// управление
  	cursors = game.input.keyboard.createCursorKeys();
@@ -99,6 +101,7 @@ Level2.prototype = {
 	scoreText = game.add.text(16, 16, 'Presents: ' + score, { fontSize: '26px', fill: '#000' });
 	lifesText = game.add.text(200, 16, 'Lives: ' + lives, { fontSize: '26px', fill: '#000' });
 	S_score = game.add.text(350, 16, 'Score: ' + s_score, { fontSize: '26px', fill: '#000' });
+
 	//кнопка паузы
 	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
 	sound = game.add.button(WINDOW_WIDTH - 280, 16, 'button-sound', SetSoundOff, this);
@@ -167,7 +170,12 @@ Level2.prototype = {
         dude.angle += 0.6;
 
     i++;
+	length_of_level++;
+	if((length_of_level==15) ||(s_score==30))//условие окончания игры писать тут
+	{
 
+		game.paused = true;
+	}
     if (i === update_interval)
     {
         changeWindDirection();
@@ -214,7 +222,6 @@ Level2.prototype = {
 			k = 1;
 			sound_for_hit.play();
 		}
-
     }
 
   }
@@ -324,7 +331,7 @@ function setParticleXSpeed(particle, max) {
 	s_score = 0;
 	gameSpeed = 250;
 	music.stop();
-	//эта строчка отвечает за проигрывание музыки
+	//эта строчка отвечает за проигрывание музыки смерти. Пока не работает т.к. игра начинается не успев до конца проиграться мелодия
 	//sound_game_over.play();
 	backgroundSpeed = 50;
 	this.game.state.start('play');
@@ -334,7 +341,7 @@ function setParticleXSpeed(particle, max) {
   //ускоряем игру
   function gameAcceleration() {
 	gameSpeed += gameSpeed * 0.05;
-	backgroundSpeed += backgroundSpeed * 0.07;
+	backgroundSpeed += backgroundSpeed * 0.06;
   }
   
 
@@ -347,11 +354,46 @@ function setParticleXSpeed(particle, max) {
   }
   
   function managePause(){
+  	choiseLabel = game.add.text(WINDOW_WIDTH/2 /2, WINDOW_HEIGHT-150, 'Click outside menu to continue', { font: '30px Arial', fill: '#fff' });
+        choiseLabel.anchor.setTo(0.5, 0.5);
+        var menu = game.add.sprite(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'button-start');
+        menu.anchor.setTo(0.5, 0.5);
 		game.paused = true;
-		var pausedText = game.add.text(game.world.centerX, game.world.centerY-300, "          Game paused\nTap anywhere to continue.", { fontSize: '34px', fill: '#b30030' });
-		game.input.onDown.add(function(){pausedText.destroy();	game.paused = false;}, this);
+
+			if(game.paused){
+            // Calculate the corners of the menu
+            var x1 = WINDOW_WIDTH/2 - 270/2, x2 = WINDOW_WIDTH/2 + 270/2,
+                y1 = WINDOW_HEIGHT/2 - 180/2, y2 = WINDOW_HEIGHT/2 + 180/2;
+
+            // Check if the click was inside the menu
+            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                // The choicemap is an array that will help us see which item was clicked
+                var choisemap = ['one', 'two', 'three', 'four', 'five', 'six'];
+
+                // Get menu local coordinates for the click
+                var x = event.x - x1,
+                    y = event.y - y1;
+
+                // Calculate the choice 
+                var choise = Math.floor(x / 90) + 3*Math.floor(y / 90);
+
+                // Display the choice
+                choiseLabel.text = 'You chose menu item: ' + choisemap[choise];
+            }
+            else{
+                // Remove the menu and the label
+                menu.destroy();
+                choiseLabel.destroy();
+
+                // Unpause the game
+                game.paused = false;
+            }
+        }
+
+		//var pausedText = game.add.text(game.world.centerX, game.world.centerY-300, "          Game paused\nTap anywhere to continue.", { fontSize: '34px', fill: '#b30030' });
+		//game.input.onDown.add(function(){pausedText.destroy();	game.paused = false;}, this);
   }
-var flag=true;//музыка включена
+
   function SetSoundOff(){
   	if(flag) 
   		{
