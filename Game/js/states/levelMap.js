@@ -5,8 +5,9 @@ function LevelMap() {}
 LevelMap.prototype = {
 
   create: function() {
-	game.stage.backgroundColor = '#00CED1';
-	game.add.button(WINDOW_WIDTH*0.70, WINDOW_HEIGHT*0.80, 'button-exit', this.startMenu, this);
+  var backk = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'backAbout');
+
+  game.add.button(WINDOW_WIDTH*0.65, WINDOW_HEIGHT*0.75, 'button-exit', this.startMenu, this);
 	
 	game.add.button(WINDOW_WIDTH*0.70, WINDOW_HEIGHT*0.20, 'level1', this.startLevel1, this);
 	game.add.button(WINDOW_WIDTH*0.50, WINDOW_HEIGHT*0.20, 'level2', this.startLevel2, this);
@@ -20,6 +21,7 @@ LevelMap.prototype = {
   },
     
   startMenu: function() {
+    musicmenu.stop();
     this.game.state.start('menu');
   },
   

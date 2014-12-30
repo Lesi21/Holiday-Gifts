@@ -11,7 +11,9 @@
   //встреча с облаком
   function collideCloud(dude, cloud) {
 	cloud.kill();
-	s_score-=50;
+	sound_for_die.play();
+	if(s_score>50) s_score-=50;
+	else s_score=0;
 	if(lives > 1)
 		lives -= 1;
 	else 

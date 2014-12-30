@@ -11,10 +11,21 @@ Preload.prototype = {
     //this.asset.anchor.setTo(0.5, 0.5);
     //this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
     //this.load.setPreloadSprite(this.asset);
-	
+
+	game.load.audio('boden', ['audio/sound1.mp3', 'audio/sound1.ogg']);
+	game.load.audio('soundmenu', ['audio/sound2.mp3', 'audio/sound2.ogg']);
+	game.load.audio('soundpresent', ['audio/presents.ogg']);
+	game.load.audio('sounddie', ['audio/die.ogg']);
+	game.load.audio('soundhit', ['audio/hit.mp3']);
+
+	game.load.audio('gameover', ['audio/gameover.mp3']);
+
 	this.load.image('dude', 'images/santa.png');
-    this.load.image('background', 'images/Sky2.png');
+    this.load.image('background', 'images/sky3.png');
     this.load.image('ground', 'images/ground.png');
+	
+	this.load.image('panel', 'images/panel.png');
+    this.load.image('backAbout', 'images/backAbout.jpg');
 	
 	this.load.image('present1', 'images/present1.png');
 	this.load.image('present2', 'images/present2.png');
@@ -26,8 +37,19 @@ Preload.prototype = {
 	this.load.image('cloud', 'images/cloud.png');
 	this.load.image('house', 'images/house.png');
 	
+	this.load.image('heart', 'images/heart.png');
+
+    game.load.spritesheet('snowflakes', 'images/snowflakes.png', 17, 17);
+    game.load.spritesheet('snowflakes_large', 'images/snowflakes_large.png', 64, 64);
+
+	this.load.image('button-sound', 'images/sound.png');
+    this.load.image('soundOFF', 'images/soundOff.png');
+
+	this.load.image('backmenu', 'images/backmenu.jpg');
+	
 	//кнопки управления для меню
 	this.load.image('button-pause', 'images/button-pause.png');
+	this.load.image('button-play', 'images/button-play.png');
 	this.load.image('button-start', 'images/button-start.png');
 	this.load.image('button-levelMap', 'images/button-levelMap.png');
 	this.load.image('button-authors', 'images/button-authors.png');

@@ -2,18 +2,38 @@
 //Нужно создать отдельный файл где будем хранить готовые функции
 //Подарки и остальные элементы должны появляться за экраном(справо)
 
-var lives = 2;//кол-во жизней персонажа 
+var flag=true;//музыка в игре включена
+var length_of_level;//длительность уровня
+var lives = 3;//кол-во жизней персонажа 
 var score = 0;//счет игры
-var s_score=0;//общий счет игры
+var s_score = 0;//общий счет игры
 var gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
 var backgroundSpeed = 50;//скорость прокрутки фона
 var k = 0;
 
+//переменные для снежка
+var max = 0;
+var front_emitter;
+var mid_emitter;
+var back_emitter;
+var update_interval = 4 * 60;
+var i = 0;
+
+
+var music;
+var sound_for_present;
+var sound_for_die;
+var sound_for_hit;
+
+var sound_game_over;
+
+
 function Level2() {
 }
 Level2.prototype = {
   create: function() {	
+
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     	
 	//Задаем фон
@@ -28,7 +48,6 @@ Level2.prototype = {
 	this.ground.autoScroll(-gameSpeed, 0);
 	this.game.physics.arcade.enableBody(this.ground);
 	this.ground.body.immovable = true;
-	
     //Создаем персонажа
 	dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
 	game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
@@ -71,9 +90,9 @@ Level2.prototype = {
 	game.time.events.loop(500, newK, this);
 	
 	//запускаем добавление подарков, препятствий на уровень
-	game.time.events.add(10, addBeforeMainLoop2, this);	
-	timerForAllToTheLevel = game.time.events.loop(11000, addAllToTheLevel2, this);
-	game.time.events.loop(5000, gameAcceleration, this);//увеличение скорости игры каждые 5сек
+	game.time.events.add(10, addBeforeMainLoop, this);	
+	timerForAllToTheLevel = game.time.events.loop(11000, addAllToTheLevel1, this);
+	game.time.events.loop(6500, gameAcceleration, this);//увеличение скорости игры каждые 6,5 сек
 
 	// управление
  	cursors = game.input.keyboard.createCursorKeys();
@@ -82,9 +101,61 @@ Level2.prototype = {
 	scoreText = game.add.text(16, 16, 'Presents: ' + score, { fontSize: '26px', fill: '#000' });
 	lifesText = game.add.text(200, 16, 'Lives: ' + lives, { fontSize: '26px', fill: '#000' });
 	S_score = game.add.text(350, 16, 'Score: ' + s_score, { fontSize: '26px', fill: '#000' });
+
 	//кнопка паузы
 	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
+	sound = game.add.button(WINDOW_WIDTH - 280, 16, 'button-sound', SetSoundOff, this);
 
+//код ответственный за снежок
+    back_emitter = game.add.emitter(game.world.centerX, -32, 600);
+    back_emitter.makeParticles('snowflakes', [0, 1, 2, 3, 4, 5]);
+    back_emitter.maxParticleScale = 0.6;
+    back_emitter.minParticleScale = 0.2;
+    back_emitter.setYSpeed(20, 100);
+    back_emitter.gravity = 0;
+    back_emitter.width = game.world.width * 1.5;
+    back_emitter.minRotation = 0;
+    back_emitter.maxRotation = 40;
+
+    mid_emitter = game.add.emitter(game.world.centerX, -32, 250);
+    mid_emitter.makeParticles('snowflakes', [0, 1, 2, 3, 4, 5]);
+    mid_emitter.maxParticleScale = 1.2;
+    mid_emitter.minParticleScale = 0.8;
+    mid_emitter.setYSpeed(50, 150);
+    mid_emitter.gravity = 0;
+    mid_emitter.width = game.world.width * 1.5;
+    mid_emitter.minRotation = 0;
+    mid_emitter.maxRotation = 40;
+
+    front_emitter = game.add.emitter(game.world.centerX, -32, 50);
+    front_emitter.makeParticles('snowflakes_large', [0, 1, 2, 3, 4, 5]);
+    front_emitter.maxParticleScale = 1;
+    front_emitter.minParticleScale = 0.5;
+    front_emitter.setYSpeed(100, 200);
+    front_emitter.gravity = 0;
+    front_emitter.width = game.world.width * 1.5;
+    front_emitter.minRotation = 0;
+    front_emitter.maxRotation = 40;
+
+    changeWindDirection();
+
+    back_emitter.start(false, 14000, 20);
+    mid_emitter.start(false, 12000, 40);
+    front_emitter.start(false, 6000, 1000);
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	sound_for_present=game.add.audio('soundpresent');
+	sound_for_die=game.add.audio('sounddie');;
+	sound_for_hit=game.add.audio('soundhit');;
+	sound_for_present.volume+=0.5;
+	sound_game_over=game.add.audio('gameover');
+
+	musicmenu.stop();
+	music = game.add.audio('boden');
+	music.stop();
+	music.volume-=0.5;
+    music.play();
+    
   },
   
   update: function() {
@@ -97,6 +168,20 @@ Level2.prototype = {
 	
 	if (dude.angle < 3)//угловой наклон
         dude.angle += 0.6;
+
+    i++;
+	length_of_level++;
+	if((length_of_level==15) ||(s_score==30))//условие окончания игры писать тут
+	{
+
+		game.paused = true;
+	}
+    if (i === update_interval)
+    {
+        changeWindDirection();
+        update_interval = Math.floor(Math.random() * 20) * 60; // 0 - 20sec @ 60fps
+        i = 0;
+    }
 	//управление №1; на этом управлении нужно разблокировать гравитацию строка 33
 	/*if (cursors.up.isDown)
     {
@@ -128,68 +213,17 @@ Level2.prototype = {
 	
 	//сброс подарка, клавиша вниз
 	if (cursors.down.isDown) {
-
+		//скидываем то что собрали 
 		if(k == 0 && score > 0) {
+			
 			addOneFlyPresent();
 			score -= 1;
+			scoreText.text = 'Presents: ' + score;
 			k = 1;
+			sound_for_hit.play();
 		}
-
     }
 
   }
 };
-	//флаг на сброс подарков
-	function newK()
-	{
-		k = 0;
-	}	
-  //цикл с подарками и препят. запускается не сразу поэтому добавим эту функцию
-  function addBeforeMainLoop2(){
-	    game.time.events.add(1000, addNewClouds, this);
-		game.time.events.add(2000, addNewClouds, this);
-		game.time.events.add(3000, addNewClouds, this);
-		game.time.events.add(6000, addFirstGroup, this);
-		game.time.events.add(6800, addSecondGroup, this);
-		game.time.events.add(8000, addFirstGroup, this);
-		game.time.events.add(9000, addNewClouds, this);
-		game.time.events.add(9500, addNewClouds, this);
-  }
-  
-  function addAllToTheLevel2() {
-		var presentHeight =  Math.random()-0.2;
-		x = WINDOW_WIDTH - (WINDOW_WIDTH/20);
-		y = (Math.random()-0.2) * WINDOW_HEIGHT*0.8;
-		var r = Math.floor(Math.random() * (3 - 1)) + 1;//Math.floor(Math.random() * (max - min)) + min - неуч)					
-		/*switch(r){
-			case 1:	{ addFirstGroup();
-					  game.time.events.add(2000, addSecondGroup, this);
-					  game.time.events.add(4000, addFirstGroup, this);
-					} break;
-			case 2:	{ addFirstGroup();
-					  game.time.events.add(2000, addSecondGroup, this);
-					  game.time.events.add(4000, addFirstGroup, this);
-					} break;
-			case 3: { addFirstGroup();
-					  game.time.events.add(2000, addSecondGroup, this);
-					  game.time.events.add(4000, addFirstGroup, this);
-					} break;
-
-			default: { addFirstGroup();
-					   game.time.events.add(2000, addSecondGroup, this);
-					   game.time.events.add(4000, addFirstGroup, this);	
-					 }
-		}*/
-		
-		game.time.events.add(1000, addNewClouds, this);
-		game.time.events.add(2000, addNewClouds, this);
-		game.time.events.add(3000, addNewClouds, this);
-		game.time.events.add(6000, addFirstGroup, this);
-		game.time.events.add(6800, addSecondGroup, this);
-		game.time.events.add(8000, addFirstGroup, this);
-		game.time.events.add(9000, addNewClouds, this);
-		game.time.events.add(9500, addNewClouds, this);
-
-  }
-
 
