@@ -23,6 +23,8 @@ Preload.prototype = {
 	this.load.image('dude', 'images/santa.png');
     this.load.image('background', 'images/sky3.png');
     this.load.image('ground', 'images/ground.png');
+
+    this.load.image('backAbout', 'images/backAbout.jpg');
 	
 	this.load.image('panel', 'images/panel.png');
     this.load.image('backAbout', 'images/backAbout.jpg');
@@ -36,8 +38,11 @@ Preload.prototype = {
 	this.load.image('snowball', 'images/snowball.png');
 	this.load.image('cloud', 'images/cloud.png');
 	this.load.image('house', 'images/house.png');
+<<<<<<< HEAD
 	
 	this.load.image('heart', 'images/heart.png');
+=======
+>>>>>>> origin/master
 
     game.load.spritesheet('snowflakes', 'images/snowflakes.png', 17, 17);
     game.load.spritesheet('snowflakes_large', 'images/snowflakes_large.png', 64, 64);
@@ -46,7 +51,10 @@ Preload.prototype = {
     this.load.image('soundOFF', 'images/soundOff.png');
 
 	this.load.image('backmenu', 'images/backmenu.jpg');
+<<<<<<< HEAD
 	
+=======
+>>>>>>> origin/master
 	//кнопки управления для меню
 	this.load.image('button-pause', 'images/button-pause.png');
 	this.load.image('button-play', 'images/button-play.png');

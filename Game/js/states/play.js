@@ -3,7 +3,10 @@
 //Подарки и остальные элементы должны появляться за экраном(справо)
 
 var flag=true;//музыка в игре включена
+<<<<<<< HEAD
 var pause = false;
+=======
+>>>>>>> origin/master
 var length_of_level;//длительность уровня
 var lives = 3;//кол-во жизней персонажа 
 var score = 0;//счет игры
@@ -56,8 +59,12 @@ Play.prototype = {
 	this.ground.autoScroll(-gameSpeed, 0);
 	this.game.physics.arcade.enableBody(this.ground);
 	this.ground.body.immovable = true;
+<<<<<<< HEAD
     
 	//Создаем персонажа
+=======
+    //Создаем персонажа
+>>>>>>> origin/master
 	dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
 	game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
 	dude.body.gravity.y = 250;	//задаем величину гравитации
@@ -115,6 +122,7 @@ Play.prototype = {
 	//кнопка паузы
 	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
 	sound = game.add.button(WINDOW_WIDTH - 280, 16, 'button-sound', SetSoundOff, this);
+<<<<<<< HEAD
 	
 	//меню паузы
 	var pausePanel = this.game.add.sprite(game.world.centerX - 200, game.world.centerY, 'panel');
@@ -127,6 +135,10 @@ Play.prototype = {
 	button_levelMap.visible = false;
 	button_play.visible = false;
 	//код ответственный за снег
+=======
+
+//код ответственный за снежок
+>>>>>>> origin/master
     back_emitter = game.add.emitter(game.world.centerX, -32, 600);
     back_emitter.makeParticles('snowflakes', [0, 1, 2, 3, 4, 5]);
     back_emitter.maxParticleScale = 0.6;
@@ -158,11 +170,19 @@ Play.prototype = {
     front_emitter.maxRotation = 40;
 
     changeWindDirection();
+<<<<<<< HEAD
 
     back_emitter.start(false, 14000, 20);
     mid_emitter.start(false, 12000, 40);
     front_emitter.start(false, 6000, 1000);
 
+=======
+
+    back_emitter.start(false, 14000, 20);
+    mid_emitter.start(false, 12000, 40);
+    front_emitter.start(false, 6000, 1000);
+
+>>>>>>> origin/master
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	sound_for_present=game.add.audio('soundpresent');
 	sound_for_die=game.add.audio('sounddie');;
@@ -204,12 +224,20 @@ Play.prototype = {
 
 
     length_of_level++;
+<<<<<<< HEAD
 	//зачем условие, можно просто по таймеру заканчивать(первый уровень длится 2мин)
 	/*if((length_of_level==15) ||(s_score==30))//условие окончания игры писать тут
 	{
 
 		game.paused = true;
 	}*/
+=======
+	if((length_of_level==15) ||(s_score==30))//условие окончания игры писать тут
+	{
+
+		game.paused = true;
+	}
+>>>>>>> origin/master
 	//управление №1; на этом управлении нужно разблокировать гравитацию строка 33
 	/*if (cursors.up.isDown)
     {
@@ -385,6 +413,7 @@ function collideHouse(dude, house) {
   }
   
   function managePause(){
+<<<<<<< HEAD
   			/*if(!pause){
 		pause = true;
 
@@ -392,6 +421,42 @@ function collideHouse(dude, house) {
 	game.paused = false;
 	//button_levelMap.visible = true;
 	button_play.visible = true;
+=======
+  		
+        var menu = game.add.sprite(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, 'button-start');
+        menu.anchor.setTo(0.5, 0.5);
+		game.paused = true;
+
+			if(game.paused){
+            var x1 = WINDOW_WIDTH/2 - 270/2, x2 = WINDOW_WIDTH/2 + 270/2,
+                y1 = WINDOW_HEIGHT/2 - 180/2, y2 = WINDOW_HEIGHT/2 + 180/2;
+
+            // Check if the click was inside the menu
+            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                // The choicemap is an array that will help us see which item was clicked
+                var choisemap = ['one', 'two', 'three', 'four', 'five', 'six'];
+
+                // Get menu local coordinates for the click
+                var x = event.x - x1,
+                    y = event.y - y1;
+
+                // Calculate the choice 
+                var choise = Math.floor(x / 90) + 3*Math.floor(y / 90);
+
+                // Display the choice
+                choiseLabel.text = 'You chose menu item: ' + choisemap[choise];
+            }
+            else{
+                // Remove the menu and the label
+                menu.destroy();
+                choiseLabel.destroy();
+
+                // Unpause the game
+                game.paused = false;
+            }
+        }
+
+>>>>>>> origin/master
 		//var pausedText = game.add.text(game.world.centerX, game.world.centerY-300, "          Game paused\nTap anywhere to continue.", { fontSize: '34px', fill: '#b30030' });
 		//game.input.onDown.add(function(){pausedText.destroy();	game.paused = false;}, this);
   }
