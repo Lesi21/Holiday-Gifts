@@ -85,10 +85,15 @@ Play.prototype = {
     clouds = game.add.group();
     clouds.enableBody = true;
 	
-	//Создаем бонусы
+	//Создаем бонусы жизни
     bonusLives = game.add.group();
     bonusLives.enableBody = true;
-	game.time.events.loop(5000, addBonusLive, this);
+	
+	//Создаем бонусы ускорения
+	bonusSpeeds = game.add.group();
+	bonusSpeeds.enableBody = true;
+
+	game.time.events.loop(6000, addBonus, this);//генерация бонусов
 	
 	//Создаем домики
     houses = game.add.group();
@@ -185,11 +190,16 @@ Play.prototype = {
     this.game.physics.arcade.collide(dude, this.ground);
 	this.game.physics.arcade.overlap(dude, presents, collectPresent, null, this);//проверка взял подарок
 	this.game.physics.arcade.collide(houses, flyPresents, collideFlyPresent, null, this);//проверка встречи домика с подарком
+	
+	//встреча с препятствиями
 	this.game.physics.arcade.overlap(dude, snowballs, collideSnowball, null, this);//проверка встречи со снежком
 	this.game.physics.arcade.overlap(dude, clouds, collideCloud, null, this);//проверка встречи с облаком
 	this.game.physics.arcade.collide(dude, houses, collideHouse, null, this);//проверка встречи с домиком
 	
-	this.game.physics.arcade.collide(dude, bonusLives, collectBonusLive, null, this);//проверка встречи с домиком
+	//встреча с бонусами
+	this.game.physics.arcade.collide(dude, bonusLives, collectBonusLive, null, this);//проверка встречи с сердечком
+	this.game.physics.arcade.collide(dude, bonusSpeeds, collectBonusSpeed, null, this);//проверка встречи с ускорением
+	
 	
 	if (dude.angle < 3)//угловой наклон
         dude.angle += 0.6;

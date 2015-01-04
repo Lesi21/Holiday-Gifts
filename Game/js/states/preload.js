@@ -37,6 +37,8 @@ Preload.prototype = {
 	this.load.image('cloud', 'images/cloud.png');
 	this.load.image('house', 'images/house.png');
 	
+	this.load.image('bonus1', 'images/bonus1.png');
+	this.load.image('bonus2', 'images/bonus2.png');
 	this.load.image('heart', 'images/heart.png');
 
     game.load.spritesheet('snowflakes', 'images/snowflakes.png', 17, 17);
