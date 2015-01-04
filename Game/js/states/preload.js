@@ -19,8 +19,10 @@ Preload.prototype = {
 	game.load.audio('soundhit', ['audio/hit.mp3']);
 
 	game.load.audio('gameover', ['audio/gameover.mp3']);
-
-	this.load.image('dude', 'images/santa.png');
+	//анимация персонажа
+	//this.load.atlasJSONHash('dude', 'images/santa.png', 'images/santa.json');
+	
+	this.load.image('dude', 'images/santa1.png');
     this.load.image('background', 'images/sky3.png');
     this.load.image('ground', 'images/ground.png');
 	
