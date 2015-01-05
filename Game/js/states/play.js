@@ -259,13 +259,8 @@ Play.prototype = {
 	this.game.physics.arcade.collide(dude, houses, collideHouse, null, this);//проверка встречи с домиком
 	
 	//встреча с бонусами
-<<<<<<< HEAD
 	this.game.physics.arcade.overlap(dude, bonusLives, collectBonusLive, null, this);//проверка встречи с сердечком
 	this.game.physics.arcade.overlap(dude, bonusSpeeds, collectBonusSpeed, null, this);//проверка встречи с ускорением
-=======
-	this.game.physics.arcade.collide(dude, bonusLives, collectBonusLive, null, this);//проверка встречи с сердечком
-	this.game.physics.arcade.collide(dude, bonusSpeeds, collectBonusSpeed, null, this);//проверка встречи с ускорением
->>>>>>> origin/master
 	
 	
 	if (dude.angle < 3)//угловой наклон
