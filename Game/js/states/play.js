@@ -37,11 +37,6 @@ Play.prototype = {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
 	
-	//замедление
-	game.time.advancedTiming = true;
-    game.time.desiredFps = 60;
-    game.time.slowMotion = 1.0;
-	this.game.time.slowMotion = 10;
 	
 	//Задаем фон
 	var cityField = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
@@ -57,6 +52,19 @@ Play.prototype = {
 	this.game.physics.arcade.enableBody(this.ground);
 	this.ground.body.immovable = true;
     
+	//Создаем анимацию персонажа
+	//dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
+	//dude.animations.add('run');
+    //dude.animations.play('run', 8, true);
+    //game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
+    //dude.body.gravity.y = 250;	//задаем величину гравитации
+    //dude.body.collideWorldBounds = true;
+    //dude.anchor.set(1);//только для управления №3
+	//dude.body.allowGravity = true;
+    //dude.scale.setTo(1.05, 1.05);
+    //dude.alpha = 1;//прозрачность
+	//this.game.add.existing(dude);
+	
 	//Создаем персонажа
 	dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
 	game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
@@ -64,7 +72,7 @@ Play.prototype = {
 	dude.body.collideWorldBounds = true;
 	dude.anchor.set(1);//только для управления №3
     dude.body.allowGravity = true;
-	dude.scale.setTo(1.25, 1.25);
+	dude.scale.setTo(0.75, 0.75);
 	dude.alpha = 1;//прозрачность
        
 	//Создаем подарки
@@ -85,10 +93,15 @@ Play.prototype = {
     clouds = game.add.group();
     clouds.enableBody = true;
 	
-	//Создаем бонусы
+	//Создаем бонусы жизни
     bonusLives = game.add.group();
     bonusLives.enableBody = true;
-	game.time.events.loop(5000, addBonusLive, this);
+	
+	//Создаем бонусы ускорения
+	bonusSpeeds = game.add.group();
+	bonusSpeeds.enableBody = true;
+
+	game.time.events.loop(6000, addBonus, this);//генерация бонусов
 	
 	//Создаем домики
     houses = game.add.group();
@@ -113,19 +126,9 @@ Play.prototype = {
 	S_score = game.add.text(350, 16, 'Score: ' + s_score, { fontSize: '26px', fill: '#000' });
 
 	//кнопка паузы
-	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', managePause, this);
+	pauseButton = game.add.button(WINDOW_WIDTH - 200, 16, 'button-pause', this.managePause, this);
 	sound = game.add.button(WINDOW_WIDTH - 280, 16, 'button-sound', SetSoundOff, this);
 	
-	//меню паузы
-	var pausePanel = this.game.add.sprite(game.world.centerX - 200, game.world.centerY, 'panel');
-	this.game.physics.arcade.enableBody(pausePanel);
-	pausePanel.body.allowGravity = false;
-	pausePanel.body.immovable = true;
-	pausePanel.visible = false;
-	var button_levelMap = game.add.button(WINDOW_WIDTH*0.35, WINDOW_HEIGHT*0.42, 'button-levelMap', this.startLevelMap, this);
-	var button_play = game.add.button(WINDOW_WIDTH*0.35, WINDOW_HEIGHT*0.42, 'button-play', this.startLevelMap, this);
-	button_levelMap.visible = false;
-	button_play.visible = false;
 	//код ответственный за снег
     back_emitter = game.add.emitter(game.world.centerX, -32, 600);
     back_emitter.makeParticles('snowflakes', [0, 1, 2, 3, 4, 5]);
@@ -178,18 +181,87 @@ Play.prototype = {
     
   },
   
-  pauseGame: function(){
-	game.paused = false;
+  
+//режим паузы
+    managePause: function() {
+		game.paused = true;
+		
+  		returnToGame = this.game.add.sprite(WINDOW_WIDTH/2.5, WINDOW_HEIGHT/3, 'button-start');
+		menu = this.game.add.sprite(WINDOW_WIDTH/4, WINDOW_HEIGHT/3, 'button-exit');
+
+        game.input.onDown.add(this.unpause, self);
+    },
+	
+      unpause: function(event) {
+		if(game.paused){
+            // Calculate the corners of the menu
+            var x1 = WINDOW_WIDTH/2, x2 = WINDOW_WIDTH/2 + 224,
+                y1 = WINDOW_HEIGHT/2, y2 = WINDOW_HEIGHT/2 + 140;
+
+			menu.destroy();
+			returnToGame.destroy();
+            // Check if the click was inside the menu
+            if((event.x > x1 && event.x < x2) && (event.y > y1 && event.y < y1+70) ){
+
+                game.paused = false;
+                //this.game.state.start('play');
+            }
+            else if((event.x > (WINDOW_WIDTH/4.5) && event.x < (WINDOW_WIDTH/2.5)) && (event.y > WINDOW_HEIGHT/3.3 && event.y < (WINDOW_HEIGHT/1.7))) {
+
+
+            		game.paused = false;
+                    this.game.state.start('menu');
+            }
+			else game.paused = false;
+        }
   },
+  
+  //окончание уровня, переход на следующий
+      manageEndLevel: function() {
+		game.paused = true;
+  		returnToGame = this.game.add.sprite(WINDOW_WIDTH/2.5, WINDOW_HEIGHT/3, 'button-start');
+		menu = this.game.add.sprite(WINDOW_WIDTH/4, WINDOW_HEIGHT/3, 'button-exit');
+        game.input.onDown.add(this.levelEnd, self);
+    },
+	
+	levelEnd: function(event) {
+		if(game.paused){
+            // Calculate the corners of the menu
+            var x1 = WINDOW_WIDTH/2, x2 = WINDOW_WIDTH/2 + 224,
+                y1 = WINDOW_HEIGHT/2, y2 = WINDOW_HEIGHT/2 + 140;
+
+			menu.destroy();
+			returnToGame.destroy();
+            // Check if the click was inside the menu
+            if((event.x > x1 && event.x < x2) && (event.y > y1 && event.y < y1+70) ){
+
+                game.paused = false;
+                //this.game.state.start('play');
+            }
+            else if((event.x > (WINDOW_WIDTH/4.5) && event.x < (WINDOW_WIDTH/2.5)) && (event.y > WINDOW_HEIGHT/3.3 && event.y < (WINDOW_HEIGHT/1.7))) {
+
+
+            		game.paused = false;
+                    this.game.state.start('menu');
+            }
+			else game.paused = false;
+        }
+  },
+  
   update: function() {
     this.game.physics.arcade.collide(dude, this.ground);
 	this.game.physics.arcade.overlap(dude, presents, collectPresent, null, this);//проверка взял подарок
 	this.game.physics.arcade.collide(houses, flyPresents, collideFlyPresent, null, this);//проверка встречи домика с подарком
+	
+	//встреча с препятствиями
 	this.game.physics.arcade.overlap(dude, snowballs, collideSnowball, null, this);//проверка встречи со снежком
 	this.game.physics.arcade.overlap(dude, clouds, collideCloud, null, this);//проверка встречи с облаком
 	this.game.physics.arcade.collide(dude, houses, collideHouse, null, this);//проверка встречи с домиком
 	
-	this.game.physics.arcade.collide(dude, bonusLives, collectBonusLive, null, this);//проверка встречи с домиком
+	//встреча с бонусами
+	this.game.physics.arcade.overlap(dude, bonusLives, collectBonusLive, null, this);//проверка встречи с сердечком
+	this.game.physics.arcade.overlap(dude, bonusSpeeds, collectBonusSpeed, null, this);//проверка встречи с ускорением
+	
 	
 	if (dude.angle < 3)//угловой наклон
         dude.angle += 0.6;
@@ -239,8 +311,8 @@ Play.prototype = {
 		game.add.tween(dude).to({angle: -6}, 70).start();
     }	else { dude.body.gravity.y = 800; }
 	
-	//сброс подарка, клавиша вниз
-	if (cursors.down.isDown) {
+	//сброс подарка, клавиша вправо
+	if (cursors.right.isDown) {
 		//скидываем то что собрали 
 		if(k == 0 && score > 0) {
 			
@@ -252,6 +324,10 @@ Play.prototype = {
 		}
     }
 
+	if(s_score >= 60)//условие окончания игры писать тут
+	{
+		game.time.events.add(10, this.manageEndLevel, this);
+	}
   }
   
   
@@ -384,18 +460,6 @@ function collideHouse(dude, house) {
     return Phaser.Rectangle.intersects(boundsA, boundsB);
   }
   
-  function managePause(){
-  			/*if(!pause){
-		pause = true;
-
-	}*/
-	game.paused = false;
-	//button_levelMap.visible = true;
-	button_play.visible = true;
-		//var pausedText = game.add.text(game.world.centerX, game.world.centerY-300, "          Game paused\nTap anywhere to continue.", { fontSize: '34px', fill: '#b30030' });
-		//game.input.onDown.add(function(){pausedText.destroy();	game.paused = false;}, this);
-  }
-
   function SetSoundOff(){
   	if(flag) 
   		{

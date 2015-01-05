@@ -19,8 +19,10 @@ Preload.prototype = {
 	game.load.audio('soundhit', ['audio/hit.mp3']);
 
 	game.load.audio('gameover', ['audio/gameover.mp3']);
-
-	this.load.image('dude', 'images/santa.png');
+	//анимация персонажа
+	//this.load.atlasJSONHash('dude', 'images/santa.png', 'images/santa.json');
+	
+	this.load.image('dude', 'images/santa1.png');
     this.load.image('background', 'images/sky3.png');
     this.load.image('ground', 'images/ground.png');
 	
@@ -37,6 +39,8 @@ Preload.prototype = {
 	this.load.image('cloud', 'images/cloud.png');
 	this.load.image('house', 'images/house.png');
 	
+	this.load.image('bonus1', 'images/bonus1.png');
+	this.load.image('bonus2', 'images/bonus2.png');
 	this.load.image('heart', 'images/heart.png');
 
     game.load.spritesheet('snowflakes', 'images/snowflakes.png', 17, 17);

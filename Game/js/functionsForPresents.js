@@ -80,30 +80,7 @@
         flyPresent.outOfBoundsKill = true;
 	}
   
-	//бонус сердечко
-    function addBonusLive() {	
 
-		var bonusLiveHeight =  Math.random() * ((game.world.height*0.7) - 50) + 50;	
-		var bonusLive = bonusLives.create(game.world.width, bonusLiveHeight, 'heart');
-
-		bonusLive.scale.setTo(0.17, 0.17);
-		bonusLive.body.velocity.x = -gameSpeed * 1.2; //скорость приближения сердечка
-		bonusLive.checkWorldBounds = true;
-		bonusLive.outOfBoundsKill = true;
-	} 
-	
-	  //встреча с подарком
-	function collectBonusLive (dude, bonusLive) {
-		sound_for_present.play();
-		bonusLive.kill();
-		s_score += 10;
-		lives++;
-		//убрал уменьшение скорости, т.к. становится неинтересно играть
-		/*if(dudeSpeed > 130)
-			dudeSpeed = dudeSpeed - 3;*/
-		S_score.text = 'Score: ' + s_score;
-		lifesText.text = 'Lives: ' + lives;
-	} 
   
   			/* //Этот блок из функции НЕ удалять
 			
