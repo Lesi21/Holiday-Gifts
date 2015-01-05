@@ -59,6 +59,12 @@ Preload.prototype = {
 	this.load.image('button-authors', 'images/button-authors.png');
 	this.load.image('button-exit', 'images/button-exit.png');
 
+	//кнопки управления для паузы и окончания уровня
+	this.load.image('button-toMenu', 'images/button-toMenu.png');
+	this.load.image('button-toPauseGo', 'images/button-toPauseGo.png');
+	this.load.image('button-toPauseNew', 'images/button-toPauseNew.png');
+	this.load.image('backForPause', 'images/backForPause.png');
+	
 	//кнопки управления для карты уровней
 	this.load.image('level1', 'images/levelMapButtons/level1.png');
 	this.load.image('level2', 'images/levelMapButtons/level2.png');

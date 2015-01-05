@@ -2,7 +2,7 @@
   {
 	var snowballHeight =  Math.random() * ((game.world.height*0.7) - 50) + 50;
 	var snowball = snowballs.create(game.world.width, snowballHeight, 'snowball');
-	snowball.scale.setTo(0.5, 0.5);
+	snowball.scale.setTo(0.55, 0.55);
     snowball.body.velocity.x = -gameSpeed * 3; //скорость приближения снежка 
     snowball.checkWorldBounds = true;
     snowball.outOfBoundsKill = true;

@@ -72,7 +72,7 @@ Play.prototype = {
 	dude.body.collideWorldBounds = true;
 	dude.anchor.set(1);//только для управления №3
     dude.body.allowGravity = true;
-	dude.scale.setTo(0.75, 0.75);
+	dude.scale.setTo(0.7, 0.7);
 	dude.alpha = 1;//прозрачность
        
 	//Создаем подарки
@@ -185,10 +185,13 @@ Play.prototype = {
 //режим паузы
     managePause: function() {
 		game.paused = true;
-		
-  		returnToGame = this.game.add.sprite(WINDOW_WIDTH/2.5, WINDOW_HEIGHT/3, 'button-start');
-		menu = this.game.add.sprite(WINDOW_WIDTH/4, WINDOW_HEIGHT/3, 'button-exit');
-
+		pausePanel = this.game.add.sprite(WINDOW_WIDTH/3.5,  WINDOW_HEIGHT/6, 'backForPause');
+		pausePanel.scale.setTo(0.50, 0.4);
+		scoreInPanel = game.add.text(WINDOW_WIDTH/3.4, WINDOW_HEIGHT/4.7, 'Score: ' + s_score, { fontSize: '35px', fill: '#000' });
+  		returnToGame = this.game.add.sprite(WINDOW_WIDTH/2.15, WINDOW_HEIGHT/1.7, 'button-toPauseGo');
+		returnToGame.scale.setTo(0.6, 0.6);
+		menu = this.game.add.sprite(WINDOW_WIDTH/3.3, WINDOW_HEIGHT/1.7, 'button-toMenu');
+		menu.scale.setTo(0.6, 0.6);
         game.input.onDown.add(this.unpause, self);
     },
 	
@@ -197,7 +200,8 @@ Play.prototype = {
             // Calculate the corners of the menu
             var x1 = WINDOW_WIDTH/2, x2 = WINDOW_WIDTH/2 + 224,
                 y1 = WINDOW_HEIGHT/2, y2 = WINDOW_HEIGHT/2 + 140;
-
+			scoreInPanel.destroy();
+			pausePanel.destroy();
 			menu.destroy();
 			returnToGame.destroy();
             // Check if the click was inside the menu
@@ -206,7 +210,7 @@ Play.prototype = {
                 game.paused = false;
                 //this.game.state.start('play');
             }
-            else if((event.x > (WINDOW_WIDTH/4.5) && event.x < (WINDOW_WIDTH/2.5)) && (event.y > WINDOW_HEIGHT/3.3 && event.y < (WINDOW_HEIGHT/1.7))) {
+            else if((event.x > (WINDOW_WIDTH/3.3) && event.x < (WINDOW_WIDTH/2.42)) && (event.y > WINDOW_HEIGHT/1.8 && event.y < (WINDOW_HEIGHT/1.1))) {
 
 
             		game.paused = false;
@@ -219,8 +223,13 @@ Play.prototype = {
   //окончание уровня, переход на следующий
       manageEndLevel: function() {
 		game.paused = true;
-  		returnToGame = this.game.add.sprite(WINDOW_WIDTH/2.5, WINDOW_HEIGHT/3, 'button-start');
-		menu = this.game.add.sprite(WINDOW_WIDTH/4, WINDOW_HEIGHT/3, 'button-exit');
+		pausePanel = this.game.add.sprite(WINDOW_WIDTH/3.5,  WINDOW_HEIGHT/6, 'backForPause');
+		pausePanel.scale.setTo(0.50, 0.4);
+		scoreInPanel = game.add.text(WINDOW_WIDTH/3.4, WINDOW_HEIGHT/4.7, 'Score: ' + s_score, { fontSize: '35px', fill: '#000' });
+  		returnToGame = this.game.add.sprite(WINDOW_WIDTH/2.15, WINDOW_HEIGHT/1.7, 'button-toPauseGo');
+		returnToGame.scale.setTo(0.6, 0.6);
+		menu = this.game.add.sprite(WINDOW_WIDTH/3.3, WINDOW_HEIGHT/1.7, 'button-toMenu');
+		menu.scale.setTo(0.6, 0.6);
         game.input.onDown.add(this.levelEnd, self);
     },
 	
@@ -229,14 +238,22 @@ Play.prototype = {
             // Calculate the corners of the menu
             var x1 = WINDOW_WIDTH/2, x2 = WINDOW_WIDTH/2 + 224,
                 y1 = WINDOW_HEIGHT/2, y2 = WINDOW_HEIGHT/2 + 140;
-
+			pausePanel.destroy();
 			menu.destroy();
 			returnToGame.destroy();
+			scoreInPanel.destroy();
+			lives = 3;//кол-во жизней персонажа 
+			score = 0;//счет игры
+			s_score = 0;//общий счет игры
+			gameSpeed = 250;//скорость приближения подарков, препятствий, бонусов, домиков, земли(ground)
+			dudeSpeed = 215;//величина(скорость) подьема персонажа
+			backgroundSpeed = 50;//скорость прокрутки фона
             // Check if the click was inside the menu
             if((event.x > x1 && event.x < x2) && (event.y > y1 && event.y < y1+70) ){
 
                 game.paused = false;
-                //this.game.state.start('play');
+
+
             }
             else if((event.x > (WINDOW_WIDTH/4.5) && event.x < (WINDOW_WIDTH/2.5)) && (event.y > WINDOW_HEIGHT/3.3 && event.y < (WINDOW_HEIGHT/1.7))) {
 
@@ -244,7 +261,7 @@ Play.prototype = {
             		game.paused = false;
                     this.game.state.start('menu');
             }
-			else game.paused = false;
+			else {game.paused = false; this.game.state.start('play');}
         }
   },
   
@@ -414,7 +431,7 @@ function addAllToTheLevel1() {
 
  function addNewHouse() {
 	var house = houses.create(game.world.width, game.world.height - 150, 'house');
-	house.scale.setTo(0.9, 0.75);
+	house.scale.setTo(0.92, 0.77);
     house.body.velocity.x = -gameSpeed; //скорость приближения снежка 
 	house.body.immovable = true;
     house.checkWorldBounds = true;
