@@ -12,6 +12,7 @@ var gameSpeed = 250;//скорость приближения подарков, 
 var dudeSpeed = 215;//величина(скорость) подьема персонажа
 var backgroundSpeed = 50;//скорость прокрутки фона
 var k = 0;
+var typeOfCart = 1;
 
 //переменные для снежка
 var max = 0;
@@ -53,27 +54,30 @@ Play.prototype = {
 	this.ground.body.immovable = true;
     
 	//Создаем анимацию персонажа
-	dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
-	dude.animations.add('run');
-    dude.animations.play('run', 8, true);
-    game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
-    dude.body.gravity.y = 250;	//задаем величину гравитации
-    dude.body.collideWorldBounds = true;
-    dude.anchor.set(1);//только для управления №3
-	dude.body.allowGravity = true;
-    dude.scale.setTo(0.75, 0.75);
-    dude.alpha = 1;//прозрачность
-	this.game.add.existing(dude);
-	
-	//Создаем персонажа
-	//dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
-	//game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
-	//dude.body.gravity.y = 250;	//задаем величину гравитации
-	//dude.body.collideWorldBounds = true;
-	//dude.anchor.set(1);//только для управления №3
-    //dude.body.allowGravity = true;
-	//dude.scale.setTo(0.7, 0.7);
-	//dude.alpha = 1;//прозрачность
+	if(typeOfCart == 1){
+		dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude');
+		dude.animations.add('run');
+		dude.animations.play('run', 8, true);
+		game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
+		dude.body.gravity.y = 250;	//задаем величину гравитации
+		dude.body.collideWorldBounds = true;
+		dude.anchor.set(1);//только для управления №3
+		dude.body.allowGravity = true;
+		dude.scale.setTo(0.75, 0.75);
+		dude.alpha = 1;//прозрачность
+		this.game.add.existing(dude);
+	}
+	if(typeOfCart == 2){
+		dude = this.game.add.sprite(game.world.centerX - 220, game.world.centerY, 'dude2');
+		game.physics.arcade.enable(dude, Phaser.Physics.ARCADE);
+		dude.body.gravity.y = 250;	//задаем величину гравитации
+		dude.body.collideWorldBounds = true;
+		dude.anchor.set(1);//только для управления №3
+		dude.body.allowGravity = true;
+		dude.scale.setTo(1.5, 1.5);
+		dude.alpha = 1;//прозрачность
+		this.game.add.existing(dude);
+	}
        
 	//Создаем подарки
     presents = this.game.add.group();  

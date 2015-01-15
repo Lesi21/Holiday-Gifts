@@ -17,9 +17,22 @@ LevelMap.prototype = {
 	game.add.button(WINDOW_WIDTH*0.12, WINDOW_HEIGHT*0.25, 'level2', this.startLevel2, this);
 	game.add.button(WINDOW_WIDTH*0.12, WINDOW_HEIGHT*0.48, 'level3', this.startLevel3, this);
 	
+	//кнопки выбора повозки
+	dude1Button = game.add.button(WINDOW_WIDTH*0.40, WINDOW_HEIGHT*0.83, 'dude', this.firstCartCheck, this);
+	dude1Button.scale.setTo(0.7, 0.7);
+	dude2Button = game.add.button(WINDOW_WIDTH*0.27, WINDOW_HEIGHT*0.83, 'dude2', this.secondCartCheck, this);
+	dude2Button.scale.setTo(1.7, 1.7);
+	cartText = game.add.text(WINDOW_WIDTH*0.05, WINDOW_HEIGHT*0.85, 'Выберите повозку ', { fontSize: '32px', fill: '#000' });
 
   },
-    
+  
+  firstCartCheck: function() {
+	typeOfCart = 1;
+  },
+  
+  secondCartCheck: function() {
+	typeOfCart = 2;
+  },  
   startMenu: function() {
     musicmenu.stop();
     this.game.state.start('menu');
