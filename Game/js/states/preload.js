@@ -60,6 +60,7 @@ Preload.prototype = {
 	this.load.image('button-levelMap', 'images/button-levelMap.png');
 	this.load.image('button-authors', 'images/button-authors.png');
 	this.load.image('button-exit', 'images/button-exit.png');
+	this.load.image('button-exit1', 'images/button-exit1.png');
 
 	//кнопки управления для паузы и окончания уровня
 	this.load.image('button-toMenu', 'images/button-toMenu.png');
