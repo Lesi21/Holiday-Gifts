@@ -7,7 +7,7 @@ LevelMap.prototype = {
   create: function() {
   var backk = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'backAbout1');
 
-  game.add.button(WINDOW_WIDTH*0.38, WINDOW_HEIGHT*0.72, 'button-exit1', this.startMenu, this);
+ game.add.button(WINDOW_WIDTH*0.65, WINDOW_HEIGHT*0.78, 'button-exit1', this.startMenu, this);
 	
 	game.add.button(WINDOW_WIDTH*0.70, WINDOW_HEIGHT*0.20, 'level4', this.startLevel4, this);
 	game.add.button(WINDOW_WIDTH*0.70, WINDOW_HEIGHT*0.41, 'level5', this.startLevel5, this);
@@ -18,11 +18,11 @@ LevelMap.prototype = {
 	game.add.button(WINDOW_WIDTH*0.13, WINDOW_HEIGHT*0.60, 'level3', this.startLevel3, this);
 	
 	//кнопки выбора повозки
-	dude1Button = game.add.button(WINDOW_WIDTH*0.40, WINDOW_HEIGHT*0.83, 'dude', this.firstCartCheck, this);
+	dude1Button = game.add.button(WINDOW_WIDTH*0.33, WINDOW_HEIGHT*0.75, 'dude', this.firstCartCheck, this);
 	dude1Button.scale.setTo(0.7, 0.7);
-	dude2Button = game.add.button(WINDOW_WIDTH*0.27, WINDOW_HEIGHT*0.83, 'dude2', this.secondCartCheck, this);
-	dude2Button.scale.setTo(1.7, 1.7);
-	cartText = game.add.text(WINDOW_WIDTH*0.05, WINDOW_HEIGHT*0.85, 'Выберите повозку ', { fontSize: '32px', fill: '#000' });
+	dude2Button = game.add.button(WINDOW_WIDTH*0.45, WINDOW_HEIGHT*0.75, 'dude2', this.secondCartCheck, this);
+	dude2Button.scale.setTo(0.7, 0.7);
+	cartText = game.add.text(WINDOW_WIDTH*0.05, WINDOW_HEIGHT*0.85, 'Выберите упряжку ', { fontSize: '32px', fill: '#000' });
 
   },
   

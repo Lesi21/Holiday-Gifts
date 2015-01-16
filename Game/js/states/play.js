@@ -74,7 +74,7 @@ Play.prototype = {
 		dude.body.collideWorldBounds = true;
 		dude.anchor.set(1);//только для управления №3
 		dude.body.allowGravity = true;
-		dude.scale.setTo(1.5, 1.5);
+		dude.scale.setTo(0.75, 0.75);
 		dude.alpha = 1;//прозрачность
 		this.game.add.existing(dude);
 	}
